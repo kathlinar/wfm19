@@ -36,5 +36,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/home/kathleen/Uni/SS19/WFM/camunda-bpm-mail-core-1.1.0.jar"/>
+	<classpathentry kind="lib" path="/home/kathleen/Uni/SS19/WFM/javax.mail.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -20,5 +20,10 @@ public class SendDateDelegate implements JavaDelegate {
                 .createMessageCorrelation("ExpRequestReceived")
                 .setVariable("date", date)
                 .correlate();
+        
+        // For convenience this is tested here (2nd task in Camunda), with our mail address
+        // TODO: delete
+        JavaMailUtil.sendMail("locally.wfm@gmail.com");
+        
     }
 }
