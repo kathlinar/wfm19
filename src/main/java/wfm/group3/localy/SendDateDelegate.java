@@ -14,6 +14,8 @@ public class SendDateDelegate implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
         Date date = (Date) delegateExecution.getVariable("date");
+        String email = (String) delegateExecution.getVariable("email");
+        LOGGER.info("Email extracted " + email);
         LOGGER.info("Date extracted " + date.toString());
         LOGGER.info("Sending Message 'ExpRequestReceived'");
         delegateExecution.getProcessEngineServices().getRuntimeService()
@@ -23,7 +25,7 @@ public class SendDateDelegate implements JavaDelegate {
         
         // For convenience this is tested here (2nd task in Camunda), with our mail address
         // TODO: delete
-        JavaMailUtil.sendMail("locally.wfm@gmail.com");
+        JavaMailUtil.sendMail(email,"User Confirmation");
         
     }
 }

@@ -13,6 +13,7 @@ public class SendCancellationDelegate implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
         LOGGER.info("Sending Message 'NegativeResponse'");
+        String email = (String) delegateExecution.getVariable("email");
 
         delegateExecution.getProcessEngineServices().getRuntimeService()
                 .createMessageCorrelation("NegativeResponse")

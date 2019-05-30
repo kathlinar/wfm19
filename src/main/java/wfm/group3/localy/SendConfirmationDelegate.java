@@ -13,6 +13,7 @@ public class SendConfirmationDelegate implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
         LOGGER.info("Sending Message 'PositiveResponse'");
+        String email = (String) delegateExecution.getVariable("email");
 
         delegateExecution.getProcessEngineServices().getRuntimeService()
                 .createMessageCorrelation("PositiveResponse")
@@ -21,6 +22,6 @@ public class SendConfirmationDelegate implements JavaDelegate {
         // Send Confirmation E-mail to the User. E-mail address acquired in Task 1: Log-In
         // For testing purposes this is for now set as our mail address
         // TODO: exchange email address to recipient
-        JavaMailUtil.sendMail("locally.wfm@gmail.com");
+        JavaMailUtil.sendMail(email,"User Confirmation");
     }
 }
