@@ -1,4 +1,4 @@
-package wfm.group3.localy;
+package wfm.group3.localy.delegates;
 
 import java.util.logging.Logger;
 

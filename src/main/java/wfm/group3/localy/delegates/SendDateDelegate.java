@@ -1,7 +1,8 @@
-package wfm.group3.localy;
+package wfm.group3.localy.delegates;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import wfm.group3.localy.utils.JavaMailUtil;
 
 import java.util.Date;
 import java.util.logging.Logger;

@@ -1,4 +1,4 @@
-package wfm.group3.localy;
+package wfm.group3.localy.utils;
 
 //import java.util.HashMap;
 //import java.util.Map;

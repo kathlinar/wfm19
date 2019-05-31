@@ -1,21 +1,20 @@
-package wfm.group3.localy;
+package wfm.group3.localy.delegates;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import java.util.logging.Logger;
 
-public class ForwardCancellationToGuide implements JavaDelegate {
+public class ForwardReservationToGuideDelegate implements JavaDelegate {
 
-    private final Logger LOGGER = Logger.getLogger(ForwardCancellationToGuide.class.getName());
+    private final Logger LOGGER = Logger.getLogger(ForwardReservationToGuideDelegate.class.getName());
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        LOGGER.info("Sending Message 'ReveiveNewCancellation'");
-
+        LOGGER.info("Sending Message 'ReceiveNewRequest'");
         delegateExecution.getProcessEngineServices().getRuntimeService()
-                .createMessageCorrelation("ReceiveNewCancellation")
+                .createMessageCorrelation("ReceiveNewRequest")
                 .setVariable("experienceID", 0)
                 .correlate();
     }

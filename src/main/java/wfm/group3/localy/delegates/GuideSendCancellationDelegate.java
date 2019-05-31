@@ -1,19 +1,21 @@
-package wfm.group3.localy;
+package wfm.group3.localy.delegates;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import java.util.logging.Logger;
 
-public class GuideSendConfirmationDelegate implements JavaDelegate {
+public class GuideSendCancellationDelegate implements JavaDelegate {
 
-    private final Logger LOGGER = Logger.getLogger(GuideSendConfirmationDelegate.class.getName());
+    private final Logger LOGGER = Logger.getLogger(GuideSendCancellationDelegate.class.getName());
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        LOGGER.info("Sending Message 'ReservationConfirmation'");
+
+        LOGGER.info("Sending Message 'ReservationCancellation'");
+
         delegateExecution.getProcessEngineServices().getRuntimeService()
-                .createMessageCorrelation("ReservationConfirmation")
+                .createMessageCorrelation("ReservationCancellation")
                 .correlate();
     }
 }
