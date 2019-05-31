@@ -5,6 +5,8 @@ import wfm.group3.localy.utils.Enums;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Experience {
@@ -34,4 +36,79 @@ public class Experience {
 
     @Column
     private LocalTime duration;
+
+    @ManyToMany(mappedBy = "offers")
+    private Set<Person> offeredBy = new HashSet<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Enums.ExperienceType getType() {
+        return type;
+    }
+
+    public void setType(Enums.ExperienceType type) {
+        this.type = type;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public int getMaxGroupSize() {
+        return maxGroupSize;
+    }
+
+    public void setMaxGroupSize(int maxGroupSize) {
+        this.maxGroupSize = maxGroupSize;
+    }
+
+    public Address getLocation() {
+        return location;
+    }
+
+    public void setLocation(Address location) {
+        this.location = location;
+    }
+
+    public LocalTime getDuration() {
+        return duration;
+    }
+
+    public void setDuration(LocalTime duration) {
+        this.duration = duration;
+    }
+
+    public Set<Person> getOfferedBy() {
+        return offeredBy;
+    }
+
+    public void setOfferedBy(Set<Person> offeredBy) {
+        this.offeredBy = offeredBy;
+    }
 }

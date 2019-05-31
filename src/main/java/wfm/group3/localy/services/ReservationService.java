@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.PersonRepository;
+import wfm.group3.localy.repository.ReservationRepository;
 
 import java.util.logging.Logger;
 
@@ -18,8 +19,11 @@ public class ReservationService {
     @Autowired
     private PersonRepository personRepository;
 
+    @Autowired
+    private ReservationRepository reservationRepository;
+
     public void doStuff() {
-        System.out.println("doing stuff here");
+        System.out.println("do stuff here");
     }
 
 }
