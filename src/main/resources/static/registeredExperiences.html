@@ -17,17 +17,15 @@
 </head>
 <body>
 <div id="app">
-    <p class="paragraph">Please select your desired time and date</p>
-    <datetime  class="text-center" type="datetime" v-model="datetime"></datetime>
     <b-table id="table" style="padding-top: 3%; padding-left: 15%; padding-right: 15%" bordered outlined striped responsive
                  :fields="fields" :items="items" class="text-center">
-        <template slot="reserve" scope="item">
-            <b-btn class="text-center" size="sm" @click="reserve(item.item)">Reserve</b-btn>
+        <template slot="cancel" scope="item">
+            <b-btn class="text-center" size="sm" @click="cancel(item.item)">Cancel</b-btn>
         </template>
     </b-table>
-    <div class="text-center">
-        <b-button :href="'registeredExperiences.html?email='+email">Booked Experiences</b-button>
-    </div>
+    <!--<div class="text-center">
+        <b-button>Make reservation</b-button>
+    </div>-->
 
 </div>
 </body>
@@ -67,8 +65,8 @@
                     label: 'Type',
                     sortable: true
                 },
-                reserve:{
-                    label: 'reserve',
+                cancel:{
+                    label: 'cancel',
                 }
 
             },
@@ -78,41 +76,17 @@
             this.baseUrl = window.location.origin + "/";
             var url = new URL(window.location.href);
             this.email = url.searchParams.get("email");
-            axios.get(this.baseUrl + "getExperiences/"+this.email).then(response => {
+            axios.get(this.baseUrl + "getBookedExperiences/"+this.email).then(response => {
                 console.log(response.data);
                 this.items = response.data;
             });
-            this.pollData();
 
         },
         methods:{
-            reserve(item) {
+            cancel(item) {
                 console.log(item);
             },
-            pollData () {
-                this.polling = setInterval(() => {
-                    axios.get(this.baseUrl + "getExperiences/"+this.email).then(response => {
-                        clearInterval(this.polling);
-                        console.log(response.data);
-                        this.items = response.data;
-                    });
-                }, 1000)
-            }
-        },
-        watch:{
-            datetime: function(val){
-                console.log(val);
-                axios.post('selectDate', {
-                    date: val,
-                    email: this.email
-                })
-                    .then(function (response) {
 
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            }
         }
 
     });

@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import wfm.group3.localy.entity.Experience;
 import wfm.group3.localy.entity.ExperienceFrontend;
 import wfm.group3.localy.entity.Person;
+import wfm.group3.localy.entity.Reservation;
+import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.PersonRepository;
+import wfm.group3.localy.repository.ReservationRepository;
 import wfm.group3.localy.utils.Enums;
 
 import java.time.LocalDate;
@@ -38,11 +41,13 @@ public class MainController {
     private RuntimeService runtimeService;
 
     @Autowired
-    private RepositoryService repositoryService;
-
+    private PersonRepository personRepository;
 
     @Autowired
-    private PersonRepository personRepository;
+    private ReservationRepository reservationRepository;
+
+    @Autowired
+    private ExperienceRepository experienceRepository;
 
     @Autowired
     private TaskService taskService;
@@ -142,12 +147,24 @@ public class MainController {
         this.lastRecommendedExperiences.put(email,experiences);
     }
 
-    @RequestMapping(value = "/postExperiences", method = RequestMethod.POST)
-    public void postRecommendedExperiences(@RequestBody Map<String ,Object> payload){
-        this.lastRecommendedExperiences.put(payload.get("email").toString(),(List<Experience>)payload.get("experiences"));
+    @RequestMapping(value = "/getBookedExperiences/{email}", method = RequestMethod.GET)
+    public ResponseEntity<List<ExperienceFrontend>> getBookedExperiences(@PathVariable("email") String email){
+        Person person = this.personRepository.findByEmail(email);
+        if(person != null){
+            List<ExperienceFrontend> result = new ArrayList<>();
+            for(Reservation reservation : this.reservationRepository.findReservationsByPersonId(person.getId())){
+                result.add(new ExperienceFrontend(this.experienceRepository.getOne(reservation.getExperienceId())));
+            }
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.LOCKED);
+
+
+
+
     }
 
-    private void createCamundaUser(Person p) {
+    /*private void createCamundaUser(Person p) {
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         AuthorizationService authorizationService = processEngine.getAuthorizationService();
         IdentityService identityService = processEngine.getIdentityService();
@@ -185,6 +202,6 @@ public class MainController {
         // create group
         identityService.createMembership(p.getId().toString(), "customers");
 
-    }
+    }*/
 
 }
