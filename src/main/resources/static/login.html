@@ -16,9 +16,10 @@
     <div class="logo">
         <img src="css/images/locally.png" alt="image could not be loaded">
     </div>
-    <p class="text-center" style="color:red;">
-        <b>{{invalid}}</b>
-    </p>
+    <b-alert variant="danger"  :show="showFailure" style="padding-top: 2%">
+        <h4 class="alert-heading">Wrong credentials!</h4>
+        <p>{{invalid}} test</p>
+    </b-alert>
     <b-card class="login">
         <b-form @submit="onSubmit">
             <b-form-group>
@@ -42,6 +43,7 @@
     var vue = new Vue({
         el: '#app',
         data: {
+            showFailure: false,
             email: '',
             password: '',
             invalid: '',
@@ -49,18 +51,22 @@
         },
         methods: {
             onSubmit(evt) {
-                evt.preventDefault()
+                let that =this;
+                evt.preventDefault();
                 if(this.email !== "" && this.password !== "") {
                     axios.post('login', {
                         email: this.email,
                         password: this.password,
                     })
                         .then(function (response) {
-                            window.location.href = "mainpage.html";
+                            console.log(response);
+                            that.showFailure = false;
+                            window.location.href = "mainpage.html?email="+that.email;
                         })
                         .catch(function (error) {
                             console.log(error);
-                            this.invalid = "Username or Password not filled!";
+                            that.showFailure = true;
+                            that.invalid = "Username or Password do not match!";
                         });
                 } else {
                     this.invalid = "Username or Password not filled!";

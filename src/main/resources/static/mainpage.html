@@ -21,10 +21,13 @@
     <datetime  class="text-center" type="datetime" v-model="datetime"></datetime>
     <b-table id="table" style="padding-top: 3%; padding-left: 15%; padding-right: 15%" bordered outlined striped responsive
                  :fields="fields" :items="items" class="text-center">
+        <template slot="reserve" scope="item">
+            <b-btn class="text-center" size="sm" @click="reserve(item.item)">Reserve</b-btn>
+        </template>
     </b-table>
-    <div class="text-center">
+    <!--<div class="text-center">
         <b-button>Make reservation</b-button>
-    </div>
+    </div>-->
 
 </div>
 </body>
@@ -33,36 +36,78 @@
         el: '#app',
         data: {
             datetime: '',
+            email: '',
             fields: {
                 id: {
-                    label: 'E-ID',
+                    label: 'ID',
                     sortable: true
                 },
-                type: {
-                    label: 'Type',
-                    sortable: true
+                description: {
+                    label: 'Description',
+                    sortable: false
                 },
-                name: {
-                    label: 'Experience-Description',
+                duration: {
+                    label: 'Duration',
                     sortable: false
                 },
 
-                rating: {
-                    label: 'Rating',
+                max_group_size: {
+                    label: 'Max. group size',
                     sortable: true
                 },
+                name:{
+                    label: 'Name',
+                    sortable: true
+                },
+                price:{
+                    label: 'Price',
+                    sortable: true
+                },
+                type:{
+                    label: 'Type',
+                    sortable: true
+                },
+                reserve:{
+                    label: 'reserve',
+                }
 
             },
             items: [],
         },
+        created() {
+            this.baseUrl = window.location.origin + "/";
+            var url = new URL(window.location.href);
+            this.email = url.searchParams.get("email");
+            axios.get(this.baseUrl + "getExperiences/"+this.email).then(response => {
+                console.log(response.data);
+                this.items = response.data;
+            });
+            this.pollData();
+
+        },
+        methods:{
+            reserve(item) {
+                console.log(item);
+            },
+            pollData () {
+                this.polling = setInterval(() => {
+                    axios.get(this.baseUrl + "getExperiences/"+this.email).then(response => {
+                        clearInterval(this.polling);
+                        console.log(response.data);
+                        this.items = response.data;
+                    });
+                }, 1000)
+            }
+        },
         watch:{
             datetime: function(val){
-                console.log(val)
+                console.log(val);
                 axios.post('selectDate', {
-                    date: val
+                    date: val,
+                    email: this.email
                 })
                     .then(function (response) {
-                        //window.location.href = "login.html";
+
                     })
                     .catch(function (error) {
                         console.log(error);

@@ -22,6 +22,7 @@ public class SendDateDelegate implements JavaDelegate {
         delegateExecution.getProcessEngineServices().getRuntimeService()
                 .createMessageCorrelation("ExpRequestReceived")
                 .setVariable("date", date)
+                .setVariable("email",email)
                 .correlate();
         
         // For convenience this is tested here (2nd task in Camunda), with our mail address
