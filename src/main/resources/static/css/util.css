@@ -1,0 +1,23 @@
+.logo {
+    text-align: center;
+    height: auto;
+}
+
+.link{
+    text-align: center;
+}
+
+.login{
+    margin-left: 30%;
+    margin-right: 30%;
+}
+img.logo-mini{
+    text-align: center;
+    max-width:50%;
+    max-height:50%;
+}
+
+.paragraph{
+    text-align: center;
+    margin-top: 5%;
+}

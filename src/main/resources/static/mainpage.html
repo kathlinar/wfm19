@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mainframe</title>
+
+    <script src="js/vue.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="css/bootstrap-vue.css"/>
+    <link type="text/css" rel="stylesheet" href="css/vue-datetime.css"/>
+    <link type="text/css" rel="stylesheet" href="css/util.css"/>
+    <script src="js/axios.min.js"></script>
+    <script src="js/bootstrap-vue.js"></script>
+    <script src="js/luxon.js"></script>
+    <script src="js/vue-datetime.js"></script>
+
+</head>
+<body>
+<div id="app">
+    <p class="paragraph">Please select your desired time and date</p>
+    <datetime  class="text-center" type="datetime" v-model="datetime"></datetime>
+    <b-table id="table" style="padding-top: 3%; padding-left: 15%; padding-right: 15%" bordered outlined striped responsive
+                 :fields="fields" :items="items" class="text-center">
+    </b-table>
+    <div class="text-center">
+        <b-button>Make reservation</b-button>
+    </div>
+
+</div>
+</body>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            datetime: '',
+            fields: {
+                id: {
+                    label: 'E-ID',
+                    sortable: true
+                },
+                type: {
+                    label: 'Type',
+                    sortable: true
+                },
+                name: {
+                    label: 'Experience-Description',
+                    sortable: false
+                },
+
+                rating: {
+                    label: 'Rating',
+                    sortable: true
+                },
+
+            },
+            items: [],
+        },
+        watch:{
+            datetime: function(val){
+                console.log(val)
+                axios.post('selectDate', {
+                    date: val
+                })
+                    .then(function (response) {
+                        //window.location.href = "login.html";
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        }
+
+    });
+</script>
+</html>
