@@ -12,10 +12,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import wfm.group3.localy.entity.Experience;
 import wfm.group3.localy.entity.ExperienceFrontend;
 import wfm.group3.localy.entity.Person;
@@ -23,9 +20,12 @@ import wfm.group3.localy.entity.Reservation;
 import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.PersonRepository;
 import wfm.group3.localy.repository.ReservationRepository;
+import wfm.group3.localy.services.ReservationService;
 import wfm.group3.localy.utils.Enums;
 
+import javax.ws.rs.Path;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -41,6 +41,9 @@ public class MainController {
     private RuntimeService runtimeService;
 
     @Autowired
+    private ReservationService reservationService;
+
+    @Autowired
     private PersonRepository personRepository;
 
     @Autowired
@@ -53,6 +56,10 @@ public class MainController {
     private TaskService taskService;
 
     private Map<String, List<Experience>> lastRecommendedExperiences = new HashMap<>();
+
+    private Person person = new Person();
+    private Experience experience = new Experience();
+    private LocalDateTime date = LocalDateTime.now();
 
     @EventListener
     private void processPostDeploy(PostDeployEvent event) {
@@ -85,6 +92,7 @@ public class MainController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity login(@RequestBody Map<String,Object> payload) {
         Person person = this.personRepository.findByEmail(payload.get("email").toString());
+        System.out.println(payload.get("password"));
         if( person != null &&  person.getPassword().equals(payload.get("password").toString())) {
 
             if (!this.customerInstances.containsKey(person.getEmail()))
@@ -113,6 +121,7 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         String text = payload.get("date").toString().substring(0,payload.get("date").toString().indexOf("."));
         LocalDate localDate = LocalDate.parse(text,formatter);
+        this.date = LocalDateTime.parse(text,formatter);
 
         this.runtimeService.setVariable(this.customerInstances.get(payload.get("email").toString()).getId(),"date",Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 
@@ -121,16 +130,31 @@ public class MainController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/makeReservation/{email}/{id}", method = RequestMethod.POST)
+    public ResponseEntity makeReservation(@PathVariable("id") String id,@PathVariable("email") String email){
+        this.experience = experienceRepository.getOne(Long.parseLong(id));
+        this.person = this.personRepository.findByEmail(email);
+        reservationService.makeReservation(this.experience,this.person,this.date);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+/*
     @RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
     public ResponseEntity makeReservation(@RequestBody Map<String ,Object> payload){
         List<Task> tasks = taskService.createTaskQuery()
                 .processDefinitionId(this.customerInstances.get(payload.get("email").toString()).getProcessDefinitionId()).list();
 
         Experience[] experiences = (Experience[]) runtimeService.getVariable(this.customerInstances.get(payload.get("email")).getId(),"allExperiences");
+        //        this.experience = experienceRepository.getOne(experiences[0].getId());
+        //this.person = personRepository.getOne(Long.parseLong(this.customerInstances.get(payload.get("email")).getId
+        //        ()));
+        //makeReservationService(experience, person);
+
         System.out.println(experiences[0]);
         taskService.complete(tasks.get(0).getId());
         return new ResponseEntity(HttpStatus.OK);
-    }
+    }*/
+
     @RequestMapping(value = "/getExperiences/{email}", method = RequestMethod.GET)
     public ResponseEntity<List<ExperienceFrontend>> getExperiences(@PathVariable("email") String email){
         if(!this.lastRecommendedExperiences.isEmpty()){

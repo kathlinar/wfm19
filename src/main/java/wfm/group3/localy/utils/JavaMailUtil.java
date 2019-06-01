@@ -2,6 +2,13 @@ package wfm.group3.localy.utils;
 
 //import java.util.HashMap;
 //import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import wfm.group3.localy.entity.Person;
+import wfm.group3.localy.entity.Reservation;
+import wfm.group3.localy.repository.ExperienceRepository;
+import wfm.group3.localy.repository.PersonRepository;
+import wfm.group3.localy.repository.ReservationRepository;
+
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -13,8 +20,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class JavaMailUtil {
-	
-	public static void sendMail(String recipient, String purpose) throws Exception {
+	public static void sendMail(String recipient, String detail, String purpose) throws Exception {
 		Properties properties = new Properties();
 
 	    properties.put("mail.smtp.gmail", "smtp.gmail.com");
@@ -41,15 +47,15 @@ public class JavaMailUtil {
 		switch(purpose) {
 			case "User Confirmation":
                 //User makes successful reservation and receives confirmation
-				message = prepareUserConfirmation(session, myAccountEmail, recipient);
+				message = prepareUserConfirmation(session, myAccountEmail, recipient, detail);
 				break;
 			case "User Cancellation":
 				//User cancels the experience and receives confirmation
-				message = prepareUserCancellationConfirmation(session, myAccountEmail, recipient);
+				message = prepareUserCancellationConfirmation(session, myAccountEmail, recipient, detail);
 				break;
 			case "Guide Cancellation":
 				//Guide cancels the experience, user receives cancellation notice
-                message = prepareUserCancellation(session, myAccountEmail, recipient);
+                message = prepareUserCancellation(session, myAccountEmail, recipient, detail);
                 break;
 		}
 
@@ -62,15 +68,16 @@ public class JavaMailUtil {
 		return message;
 	}
 
-	private static Message prepareUserConfirmation(Session session, String myAccountEmail, String recipient) {
+	private static Message prepareUserConfirmation(Session session, String myAccountEmail, String recipient,
+												   String detail) {
 
 		Message message = new MimeMessage(session);
 		try {
 			message.setFrom(new InternetAddress(myAccountEmail));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-			message.setSubject("Your local.ly experience(s)!");
-			String emailContent = "<h2>Thank you for reserving local.ly experiences</h2><br><p>Your local guides are " +
-					"excited to meet you. Here's your requested experience(s):</p>" + listExperiences()+ "<br> " +
+			message.setSubject("Your local.ly experience!");
+			String emailContent = "<h2>Thank you for reserving a local.ly experience</h2><br><p>Your local guides are" +
+					"excited to meet you. Here's your requested experience:</p>" + detail + "<br> " +
 					"<p>See you!</p></br><p>local.ly</p>";
 			message.setContent(emailContent, "text/html");
 		} catch (Exception e) {
@@ -81,7 +88,7 @@ public class JavaMailUtil {
 	}
 
     private static Message prepareUserCancellation(Session session, String myAccountEmail, String
-            recipient) {
+            recipient, String detail) {
 
         Message message = new MimeMessage(session);
         try {
@@ -89,7 +96,7 @@ public class JavaMailUtil {
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             message.setSubject("We're sorry ... ");
             String emailContent = "<p>Thank you for reserving experiences with local.ly. Unfortunately, we had to " +
-                    "cancel your reservation for" + listExperiences() + "<br> " +
+                    "cancel your reservation for" + detail + "<br> " +
                     "<p>You can always look for other experiences on local.ly.</p><br><p>Hope to see you at another " +
                     "experience!</p><br><p>local.ly</p>";
             message.setContent(emailContent, "text/html");
@@ -102,7 +109,7 @@ public class JavaMailUtil {
 
 
 	private static Message prepareUserCancellationConfirmation(Session session, String myAccountEmail, String
-            recipient) {
+            recipient, String detail) {
 
 		Message message = new MimeMessage(session);
 		try {
@@ -110,8 +117,8 @@ public class JavaMailUtil {
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			message.setSubject("Your local.ly cancellation");
 			String emailContent = "<p>Thank you for letting us know that you won't make it. We confirm your " +
-					"cancellation for your experience(s):" +
-					 listExperiences() + "<br> " +
+					"cancellation for your experience:" +
+					 detail + "<br> " +
 					"<p>You can always look for other experiences on local.ly.</p><br><p>See you " +
 					"next time!</p><br><p>local.ly</p>";
 			message.setContent(emailContent, "text/html");
@@ -121,15 +128,5 @@ public class JavaMailUtil {
 		}
 		return message;
 	}
-
-    private static String listExperiences(){
-        String experienceList = "<ul>";
-        String[] experiences = {"Experience 1", "Experience 2", "Experience 3"};
-        for (String experience : experiences) {
-            experienceList += "<li>" + experience + "</li>";
-        }
-
-        return experienceList;
-    }
 
 }

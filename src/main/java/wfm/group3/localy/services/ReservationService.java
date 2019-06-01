@@ -3,10 +3,14 @@ package wfm.group3.localy.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import wfm.group3.localy.entity.Experience;
+import wfm.group3.localy.entity.Person;
+import wfm.group3.localy.entity.Reservation;
 import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.PersonRepository;
 import wfm.group3.localy.repository.ReservationRepository;
+import wfm.group3.localy.utils.JavaMailUtil;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -27,6 +31,25 @@ public class ReservationService {
 
     public List<Experience> retrieveExperiences() {
         return experienceRepository.findAll();
+    }
+
+
+    public void makeReservation(Experience experience, Person person, LocalDateTime date) {
+        Reservation reservation = new Reservation();
+        reservation.setPersonId(person.getId());
+        reservation.setExperienceId(experience.getId());
+        reservation.setReservationDate(date);
+
+        reservationRepository.save(reservation);
+
+        String detail = experience.getName() + ", on " + date;
+
+        try {
+            JavaMailUtil.sendMail(person.getEmail(),detail,"User Confirmation");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

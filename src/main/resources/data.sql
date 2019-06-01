@@ -6,6 +6,9 @@ VALUES (1, '1990-01-01', 'Max', 'Musterguide 1', 'GUIDE'),
        (4, '1990-04-01', 'Franz', 'Mustermann 2', 'CUSTOMER'),
        (5, '1990-05-01', 'Franz', 'Mustermann 3', 'CUSTOMER');
 
+INSERT INTO Person (id,email,first_name,last_name,password,type)
+VALUES(6,'k.riginding@gmail.com','Kathleen','Riginding','1234wfm','GUIDE');
+
 -- addresses
 INSERT INTO Address (id, city, street, zip)
 VALUES (1, 'Vienna', 'Am Ring 1', '1010'),

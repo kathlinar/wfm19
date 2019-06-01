@@ -27,7 +27,7 @@ public class SendDateDelegate implements JavaDelegate {
         
         // For convenience this is tested here (2nd task in Camunda), with our mail address
         // TODO: delete
-        JavaMailUtil.sendMail(email,"User Confirmation");
+        //JavaMailUtil.sendMail(email,"User Confirmation");
         
     }
 }

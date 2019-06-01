@@ -19,10 +19,5 @@ public class SendConfirmationDelegate implements JavaDelegate {
         delegateExecution.getProcessEngineServices().getRuntimeService()
                 .createMessageCorrelation("PositiveResponse")
                 .correlate();
-        
-        // Send Confirmation E-mail to the User. E-mail address acquired in Task 1: Log-In
-        // For testing purposes this is for now set as our mail address
-        // TODO: exchange email address to recipient
-        JavaMailUtil.sendMail(email,"User Confirmation");
     }
 }

@@ -87,7 +87,14 @@
         },
         methods:{
             reserve(item) {
-                console.log(item);
+                axios.post(this.baseUrl+'makeReservation/'+this.email+'/'+item.id)
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+                console.log(item.id);
             },
             pollData () {
                 this.polling = setInterval(() => {
