@@ -20,14 +20,6 @@ public class WfmApplication {
         SpringApplication.run(WfmApplication.class, args);
     }
 
-    @Autowired
-    private RuntimeService runtimeService;
-
-    @EventListener
-    private void processPostDeploy(PostDeployEvent event) {
-        //runtimeService.startProcessInstanceByKey("loanApproval");
-    }
-
     /**
      * Start internal H2 server so we can query the DB from IDE
      *

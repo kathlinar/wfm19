@@ -11,7 +11,8 @@ import java.util.Set;
 public class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_generator")
+    @SequenceGenerator(name="person_generator", sequenceName = "pers_seq", initialValue = 6)
     private Long id;
 
     @Column
@@ -22,6 +23,12 @@ public class Person {
 
     @Column
     private LocalDate birthday;
+
+    @Column
+    private String email;
+
+    @Column
+    private String password;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -81,5 +88,21 @@ public class Person {
 
     public void setOffers(Set<Experience> offers) {
         this.offers = offers;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+
+    <script src="js/vue.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="css/bootstrap-vue.css"/>
+    <link type="text/css" rel="stylesheet" href="css/util.css"/>
+    <script src="js/axios.min.js"></script>
+    <script src="js/bootstrap-vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="logo">
+        <img src="css/images/locally.png" alt="image could not be loaded">
+    </div>
+    <p class="text-center" style="color:red;">
+        <b>{{invalid}}</b>
+    </p>
+    <b-card class="login">
+        <b-form @submit="onSubmit">
+            <b-form-group>
+                <b-form-input v-model="firstName" type="text" placeholder="Firstname" required/>
+            </b-form-group>
+
+            <b-form-group>
+                <b-form-input v-model="lastName" type="text" placeholder="Lastname" required/>
+            </b-form-group>
+
+            <b-form-group>
+                <b-form-input v-model="mail" type="text" placeholder="E-Mail" required/>
+            </b-form-group>
+
+            <b-form-group>
+                <b-form-input v-model="password" type="password" placeholder="Password" required/>
+            </b-form-group>
+
+            <div class="text-center">
+                <b-button type="submit" variant="primary" block>Register</b-button>
+            </div>
+        </b-form>
+    </b-card>
+
+</div>
+</body>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            baseUrl: '',
+            firstName: '',
+            lastName: '',
+            mail: '',
+            password: '',
+            invalid: '',
+
+        },
+        methods: {
+            onSubmit(evt) {
+                evt.preventDefault();
+                this.baseUrl = window.location.origin + "/";
+                axios.post('newUser', {
+                    firstName: this.firstName,
+                    lastName: this.lastName,
+                    mail: this.mail,
+                    password: this.password,
+                })
+                    .then(function (response) {
+                        //window.location.href = "login.html";
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        this.invalid = "Username or Password not filled!";
+                    });
+            },
+        },
+
+    });
+</script>
+</html>
