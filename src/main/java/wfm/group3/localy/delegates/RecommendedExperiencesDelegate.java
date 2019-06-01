@@ -12,6 +12,5 @@ public class RecommendedExperiencesDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         LOGGER.info("Recommending experiences");
-        delegateExecution.setVariable("recommended","testRecommendation");
     }
 }

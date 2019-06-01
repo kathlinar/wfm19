@@ -3,13 +3,14 @@ package wfm.group3.localy.entity;
 import wfm.group3.localy.utils.Enums;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Experience {
+public class Experience implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -110,5 +111,15 @@ public class Experience {
 
     public void setOfferedBy(Set<Person> offeredBy) {
         this.offeredBy = offeredBy;
+    }
+
+    @Override
+    public String toString() {
+        return "Experience{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

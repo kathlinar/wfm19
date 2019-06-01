@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import wfm.group3.localy.entity.Experience;
 import wfm.group3.localy.entity.Person;
 import wfm.group3.localy.repository.PersonRepository;
 import wfm.group3.localy.utils.Enums;
@@ -29,6 +30,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +111,17 @@ public class MainController {
         //DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         runtimeService.setVariable(this.customerInstance.getId(),"date",Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+        taskService.complete(tasks.get(0).getId());
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
+    public ResponseEntity makeReservation(@RequestBody Map<String ,Object> payload){
+        List<Task> tasks = taskService.createTaskQuery()
+                .processDefinitionId(this.customerInstance.getProcessDefinitionId()).list();
+
+        Experience[] experiences = (Experience[]) runtimeService.getVariable(this.customerInstance.getId(),"allExperiences");
+        System.out.println(experiences[0]);
         taskService.complete(tasks.get(0).getId());
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -3,12 +3,13 @@ package wfm.group3.localy.entity;
 import wfm.group3.localy.utils.Enums;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Person {
+public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_generator")

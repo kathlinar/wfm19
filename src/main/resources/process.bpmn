@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_122gef9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_122gef9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.1">
   <bpmn:collaboration id="Collaboration_1pwyh2g">
     <bpmn:participant id="Participant_0escyap" name="Customer" processRef="Customer" />
     <bpmn:participant id="Participant_16tfr6m" name="Local Guides" processRef="LocalGuide" />
@@ -272,7 +272,7 @@
       <bpmn:incoming>SequenceFlow_0oganzg</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_17ahtei</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_1clh4tf" name="Search for available experiences on selected date" camunda:class="wfm.group3.localy.delegates.RetrieveExperiencesDelegate">
+    <bpmn:serviceTask id="Task_1clh4tf" name="Search for available experiences on selected date" camunda:delegateExpression="${retrieveExperiencesDelegate}">
       <bpmn:incoming>SequenceFlow_0bmm2g7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0oganzg</bpmn:outgoing>
     </bpmn:serviceTask>

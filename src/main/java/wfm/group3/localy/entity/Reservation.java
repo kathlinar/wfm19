@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @IdClass(Reservation.IdClass.class)
-public class Reservation {
+public class Reservation implements Serializable{
 
     @Id
     private Long personId;
