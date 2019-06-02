@@ -18,7 +18,14 @@ VALUES (1, 'Vienna', 'Am Ring 1', '1010'),
        (2, 'Vienna', 'Am Ring 2', '1010'),
        (3, 'Vienna', 'Am Ring 3', '1010'),
        (4, 'Melk', 'Stift 1', '3390'),
-       (5, 'Vienna', 'Schloss Schönbrunn', '1130');
+       (5, 'Vienna', 'Schloss Schönbrunn', '1130'),
+       (6,'Vienna','Prater Hauptallee','1020'),
+       (7,'Vienna', 'Donaukanal', '1010'),
+       (8,'Vienna','Linke Wienzeile 22', '1060'),
+       (9,'Vienna', 'Lindengasse 53','1070'),
+       (10,'Vienna','Hernalser Guertel 20','1080'),
+       (11,'Vienna','Wipplingerstraße 9','1010');
+
 
 -- experiences
 INSERT INTO Experience (id, description, duration, max_group_size, name, price, type, location_id)
@@ -26,7 +33,15 @@ VALUES (1, 'Tagesausflug von Wien zum Stift Melk und ins Donautal', '06:00', 30,
         'SIGHTSEEING', 4),
        (2,
         'Lauschen Sie der Musik von Mozart und Strauss in der herrlichen Atmosphäre der Orangerie im Schloss Schönbrunn.',
-        '01:30', 300, 'Abendkonzert im Schloss Schönbrunn', 45, 'CONCERT', 5);
+        '01:30', 300, 'Abendkonzert im Schloss Schönbrunn', 45, 'CONCERT', 5),
+        (3,'We will run through the Allee in a relaxed pace. Beginners welcome!','01:30',10,'Morning Run - Prater', 0,
+        'SPORTS',6),
+        (4,'Afternoon 10k run along the water and drinks','01:30',10,'Afternoon Run - Donaukanal',10,'SPORTS',7),
+        (5,'We will visit modern coffeehouses to drink some coffee and people watch','02:00',5,
+        'Modern coffee house tour',20,'SPECIAL',8),
+        (6, 'Playing VR games + drinks afterwards','03:00',15,'VR Games at VREI',25,'GAMES',9),
+        (7, 'We will split in two groups and play against each other','01:30',16,'Escape the Room',20,'GAMES',10),
+        (8,'Beer tasting, snacks and more','01:30',10,'Austrian Beer Tasting Experience',15,'SPECIAL',11);
 
 -- reservations
 INSERT INTO Reservation (id,experience_id, person_id, reservation_date, attended, deleted, feedback)
