@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 public class Reservation implements Serializable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "res_generator")
+    @SequenceGenerator(name="reservation_generator", sequenceName = "res_seq", initialValue = 4)
+    private Long reservationId;
 
     @Id
     private Long personId;
@@ -34,17 +35,37 @@ public class Reservation implements Serializable{
     private String processDefinitionId;
 
     static class IdClass implements Serializable {
-        private Long id;
+        private Long reservationId;
         private Long personId;
         private Long experienceId;
+
+        public Long getReservationId() {
+            return reservationId;
+        }
+
+        public void setReservationId(Long reservationId) {
+            this.reservationId = reservationId;
+        }
+
+        public Long getPersonId() {
+            return personId;
+        }
+
+        public void setPersonId(Long personId) {
+            this.personId = personId;
+        }
+
+        public Long getExperienceId() {
+            return experienceId;
+        }
+
+        public void setExperienceId(Long experienceId) {
+            this.experienceId = experienceId;
+        }
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setReservationId(Long reservationId) {
+        this.reservationId = reservationId;
     }
 
     public String getProcessDefinitionId() {

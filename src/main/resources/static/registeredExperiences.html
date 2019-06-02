@@ -44,9 +44,12 @@
             <b-btn class="text-center" size="sm" @click="attend(item.item)">Attend</b-btn>
         </template>
     </b-table>
-    <!--<div class="text-center">
-        <b-button>Make reservation</b-button>
-    </div>-->
+
+    <b-modal id="cancellation" v-model="modalShow" title="Reservation" hide-footer>
+        <div class="d-block text-center">
+            <h4>{{cancelTxt}}</h4>
+        </div>
+    </b-modal>
 
 </div>
 </body>
@@ -55,6 +58,8 @@
         el: '#app',
         data: {
             datetime: '',
+            cancelTxt: '',
+            modalShow: false,
             email: '',
             fields: {
                 name:{
@@ -106,8 +111,18 @@
         },
         methods:{
             cancel(item) {
-                //TODO
-                console.log(item);
+                let _this = this;
+                axios.post('/cancelReservation', {
+                    date: item.reservationDate,
+                    email: this.email,
+                }).then(function (response) {
+                    _this.cancelTxt = 'The cancellation of '+item.name+' was successfully';
+                    _this.modalShow = true;
+                })
+                .catch(function (error) {
+                    _this.cancelTxt = 'Their was an error on the cancellation of '+item.name;
+                    _this.modalShow = true;
+                });
             },
             attend(item){
                 //TODO
