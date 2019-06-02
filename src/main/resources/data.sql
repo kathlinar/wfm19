@@ -25,7 +25,8 @@ VALUES(6,'k.riginding@gmail.com','Kathleen','Riginding','$31$16$vy_nqNAQuuvTxPNX
       (7,'e1427322@student.tuwien.ac.at','Christoph','Huber','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','GUIDE'),
       (8,'e1426163@student.tuwien.ac.at','Samuel','Alkin','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','GUIDE'),
       (9,'samuel.alkin@gmx.at','Samuel','Alkin','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','CUSTOMER'),
-      (10,'e1427619@student.tuwien.ac.at','Patrick','Fichtinger','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','GUIDE');
+      (10,'e1426987@student.tuwien.ac.at','Daniel','Ly','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','GUIDE'),
+      (11,'e1427619@student.tuwien.ac.at','Patrick','Fichtinger','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','GUIDE');
 
 
 -- experiences

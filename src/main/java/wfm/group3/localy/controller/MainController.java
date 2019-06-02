@@ -107,6 +107,11 @@ public class MainController {
                         .setVariable("loggedIn", false)
                         .execute());
                 this.customerInstances.put(person.getEmail(), list);
+            }else{
+                this.customerInstances.get(person.getEmail()).add(this.runtimeService.createProcessInstanceByKey("Customer")
+                        .setVariables(payload)
+                        .setVariable("loggedIn", false)
+                        .execute());
             }
             List<Task> tasks = this.taskService.createTaskQuery()
                     .processDefinitionId(this.customerInstances.get(person.getEmail()).get(this.customerInstances.get(person.getEmail()).size() - 1).getProcessDefinitionId()).list();
@@ -118,8 +123,14 @@ public class MainController {
         } else
             return new ResponseEntity(HttpStatus.FAILED_DEPENDENCY);
     }
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public ResponseEntity logout(@RequestBody Map<String,Object> payload) {
+        int posNewestInstance = this.customerInstances.get(payload.get("email").toString()).size()-1;
+        this.runtimeService.deleteProcessInstance(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getProcessInstanceId(),"");
+        this.customerInstances.get(payload.get("email").toString()).remove(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance));
 
-
+        return new ResponseEntity(HttpStatus.OK);
+    }
     @RequestMapping(value = "/selectDate", method = RequestMethod.POST)
     public ResponseEntity selectDate(@RequestBody Map<String, Object> payload) {
         int posNewestInstance = this.customerInstances.get(payload.get("email").toString()).size() - 1;
