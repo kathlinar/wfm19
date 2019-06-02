@@ -57,15 +57,11 @@ public class MainController {
 
     private Map<String, List<Experience>> lastRecommendedExperiences = new HashMap<>();
 
+    private Map<String, LocalDateTime> lastSelectedDate = new HashMap<>();
+
     private Person person = new Person();
     private Experience experience = new Experience();
-    private LocalDateTime date = LocalDateTime.now();
-
-    @EventListener
-    private void processPostDeploy(PostDeployEvent event) {
-        System.out.println(event);
-        //runtimeService.startProcessInstanceByKey("loanApproval");
-    }
+    //private LocalDateTime date = LocalDateTime.now();
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() {
@@ -121,7 +117,7 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         String text = payload.get("date").toString().substring(0,payload.get("date").toString().indexOf("."));
         LocalDate localDate = LocalDate.parse(text,formatter);
-        this.date = LocalDateTime.parse(text,formatter);
+        this.lastSelectedDate.put(payload.get("email").toString(),LocalDateTime.parse(text,formatter));
 
         this.runtimeService.setVariable(this.customerInstances.get(payload.get("email").toString()).getId(),"date",Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 
@@ -130,11 +126,19 @@ public class MainController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/makeReservation/{email}/{id}", method = RequestMethod.POST)
-    public ResponseEntity makeReservation(@PathVariable("id") String id,@PathVariable("email") String email){
-        this.experience = experienceRepository.getOne(Long.parseLong(id));
-        this.person = this.personRepository.findByEmail(email);
-        reservationService.makeReservation(this.experience,this.person,this.date);
+    @RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
+    public ResponseEntity makeReservation(@RequestBody Map<String, Object> payload){
+
+        this.experience = this.experienceRepository.getOne(Long.parseLong(payload.get("id").toString()));
+        this.person = this.personRepository.findByEmail(payload.get("email").toString());
+        this.reservationService.makeReservation(this.experience,this.person,this.lastSelectedDate.get(payload.get("email").toString()));
+
+        List<Task> tasks = taskService.createTaskQuery()
+                .processDefinitionId(this.customerInstances.get(this.person.getEmail()).getProcessDefinitionId()).list();
+
+        this.runtimeService.setVariable(this.customerInstances.get(this.person.getEmail()).getId(),"searchCancelled",false);
+
+        this.taskService.complete(tasks.get(0).getId());
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -181,10 +185,7 @@ public class MainController {
             }
             return new ResponseEntity<>(result, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.LOCKED);
-
-
-
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
     }
 
