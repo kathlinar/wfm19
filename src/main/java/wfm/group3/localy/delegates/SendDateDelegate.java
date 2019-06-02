@@ -13,7 +13,8 @@ public class SendDateDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-
+        LOGGER.info(delegateExecution.hasVariable("date") ? "yes" : "no");
+        LOGGER.info(delegateExecution.getVariable("date").toString());
         Date date = (Date) delegateExecution.getVariable("date");
         String email = (String) delegateExecution.getVariable("email");
         LOGGER.info("Email extracted " + email);

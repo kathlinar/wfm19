@@ -75,8 +75,8 @@ public class MainController {
                         .setVariables(payload)
                         .setVariable("loggedIn", true)
                         .execute();
-                this.lastRecommendedExperiences = new HashMap<>();
-                this.lastSelectedDate = new HashMap<>();
+                this.lastRecommendedExperiences.remove(payload.get("email").toString());
+                this.lastSelectedDate.remove(payload.get("email").toString());
                 return new ResponseEntity(HttpStatus.OK);
             }
         }
@@ -132,12 +132,13 @@ public class MainController {
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         String text = payload.get("date").toString().substring(0,payload.get("date").toString().indexOf("."));
+        System.out.println(text);
         LocalDate localDate = LocalDate.parse(text,formatter);
         this.lastSelectedDate.put(payload.get("email").toString(),LocalDateTime.parse(text,formatter));
-
         this.runtimeService.setVariable(this.customerInstances.get(payload.get("email").toString()).getId(),"date",Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-
+        System.out.println(this.runtimeService.getVariable(this.customerInstances.get(payload.get("email").toString()).getId(),"date"));
         if(tasks.get(0).getName().equals("Select Date"))
+            System.out.println("Select Date Task found");
             this.taskService.complete(tasks.get(0).getId());
 
         return new ResponseEntity(HttpStatus.OK);

@@ -75,6 +75,7 @@
             items: [],
         },
         created() {
+            console.log("Created!");
             this.baseUrl = window.location.origin + "/";
             var url = new URL(window.location.href);
             this.email = url.searchParams.get("email");
@@ -83,7 +84,6 @@
                 this.items = response.data;
             });
             this.pollData();
-
         },
         methods:{
             start(){
@@ -116,11 +116,14 @@
             },
             pollData () {
                 this.polling = setInterval(() => {
-                    axios.get(this.baseUrl + "getExperiences/"+this.email).then(response => {
-                        clearInterval(this.polling);
-                        console.log(response.data);
-                        this.items = response.data;
-                    });
+                    axios.get(this.baseUrl + "getExperiences/"+this.email)
+                        .then(response => {
+                            clearInterval(this.polling);
+                            console.log(response.data);
+                            this.items = response.data;
+                        }).catch(function(error) {
+
+                        });
                 }, 1000)
             }
         },
