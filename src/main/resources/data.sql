@@ -6,13 +6,6 @@ VALUES (1, '1990-01-01', 'Max', 'Musterguide 1', 'GUIDE'),
        (4, '1990-04-01', 'Franz', 'Mustermann 2', 'CUSTOMER'),
        (5, '1990-05-01', 'Franz', 'Mustermann 3', 'CUSTOMER');
 
-INSERT INTO Person (id,email,first_name,last_name,password,type)
-VALUES(6,'k.riginding@gmail.com','Kathleen','Riginding','1234wfm','GUIDE'),
-      (7,'e1427322@student.tuwien.ac.at','Christoph','Huber','test','GUIDE'),
-      (8,'e1426163@student.tuwien.ac.at','Samuel','Alkin','test','GUIDE'),
-      (9,'samuel.alkin@gmx.at','Samuel','Alkin','test','CUSTOMER');
-
--- addresses
 INSERT INTO Address (id, city, street, zip)
 VALUES (1, 'Vienna', 'Am Ring 1', '1010'),
        (2, 'Vienna', 'Am Ring 2', '1010'),
@@ -25,6 +18,14 @@ VALUES (1, 'Vienna', 'Am Ring 1', '1010'),
        (9,'Vienna', 'Lindengasse 53','1070'),
        (10,'Vienna','Hernalser Guertel 20','1080'),
        (11,'Vienna','Wipplingerstraße 9','1010');
+
+-- addresses
+INSERT INTO Person (id,email,first_name,last_name,password,type)
+VALUES(6,'k.riginding@gmail.com','Kathleen','Riginding','$31$16$vy_nqNAQuuvTxPNX0nxUXon5UWC_Z4_-VXOAn5UnIlo','GUIDE'),
+      (7,'e1427322@student.tuwien.ac.at','Christoph','Huber','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','GUIDE'),
+      (8,'e1426163@student.tuwien.ac.at','Samuel','Alkin','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','GUIDE'),
+      (9,'samuel.alkin@gmx.at','Samuel','Alkin','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','CUSTOMER'),
+      (10,'e1427619@student.tuwien.ac.at','Patrick','Fichtinger','$31$16$fvCaqiDruLg3LMwv09V6KTg-M5SIZTvCbQI3yBw94E8','GUIDE');
 
 
 -- experiences
