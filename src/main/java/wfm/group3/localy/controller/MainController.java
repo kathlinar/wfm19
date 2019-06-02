@@ -131,14 +131,61 @@ public class MainController {
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         String text = payload.get("date").toString().substring(0,payload.get("date").toString().indexOf("."));
-        System.out.println(text);
         LocalDate localDate = LocalDate.parse(text,formatter);
+
         this.lastSelectedDate.put(payload.get("email").toString(),LocalDateTime.parse(text,formatter));
         this.runtimeService.setVariable(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getId(),"date",Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-        System.out.println(this.runtimeService.getVariable(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getId(),"date"));
+
         if(tasks.get(0).getName().equals("Select Date"))
-            System.out.println("Select Date Task found");
             this.taskService.complete(tasks.get(0).getId());
+        else{
+            this.runtimeService.setVariable(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getId(),"searchCancelled",true);
+            this.taskService.complete(tasks.get(0).getId());
+
+            tasks = this.taskService.createTaskQuery()
+                    .processDefinitionId(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getProcessDefinitionId()).list();
+
+            this.runtimeService.setVariable(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getId(),"date",Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+
+            if(tasks.get(0).getName().equals("Select Date"))
+                this.taskService.complete(tasks.get(0).getId());
+
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/cancelReservation", method = RequestMethod.POST)
+    public ResponseEntity cancelReservation(@RequestBody Map<String, Object> payload){
+
+        this.runtimeService.createMessageCorrelation("InitUserCancellation").correlate();
+
+        String processDefId = this.reservationRepository
+                .findByReservationDate(LocalDateTime.parse(payload.get("date").toString().replace("T"," "),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .get(0)
+                .getProcessDefinitionId();
+
+        for(ProcessInstance processInstance : this.customerInstances.get(payload.get("email").toString())){
+            if(processInstance.getProcessDefinitionId().equals(processDefId)){
+                this.customerInstances.get(payload.get("email").toString()).remove(processInstance);
+            }
+        }
+
+        //TODO set status of reservation to canceled
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "/attendExperience", method = RequestMethod.POST)
+    public ResponseEntity attendExperience(@RequestBody Map<String, Object> payload){
+
+        String processDefId = this.reservationRepository
+                .findByReservationDate(LocalDateTime.parse(payload.get("date").toString().replace("T"," "),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .get(0)
+                .getProcessDefinitionId();
+
+
+        //TODO set status of reservation to attended
 
         return new ResponseEntity(HttpStatus.OK);
     }

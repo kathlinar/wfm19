@@ -8,6 +8,9 @@ import java.time.LocalTime;
 
 public class BookedExperiences {
 
+
+    private Long experienceId;
+
     private String name;
 
     private String description;
@@ -23,6 +26,7 @@ public class BookedExperiences {
     private LocalDateTime reservationDate;
 
     public BookedExperiences(Experience experience, Reservation reservation) {
+        this.experienceId = experience.getId();
         this.name = experience.getName();
         this.description = experience.getDescription();
         this.type = experience.getType();
@@ -31,6 +35,15 @@ public class BookedExperiences {
         this.duration = experience.getDuration();
 
         this.reservationDate = reservation.getReservationDate();
+    }
+
+
+    public Long getExperienceId() {
+        return experienceId;
+    }
+
+    public void setExperienceId(Long experienceId) {
+        this.experienceId = experienceId;
     }
 
     public String getName() {

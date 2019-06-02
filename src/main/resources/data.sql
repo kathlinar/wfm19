@@ -44,7 +44,7 @@ VALUES (1, 'Tagesausflug von Wien zum Stift Melk und ins Donautal', '06:00', 30,
         (8,'Beer tasting, snacks and more','01:30',10,'Austrian Beer Tasting Experience',15,'SPECIAL',11);
 
 -- reservations
-INSERT INTO Reservation (id,experience_id, person_id, reservation_date, attended, deleted, feedback)
+INSERT INTO Reservation (reservation_id,experience_id, person_id, reservation_date, attended, deleted, feedback)
 VALUES (1,1, 3, '2019-05-01', true, false, 'was a great day with my lads'),
        (2,2, 4, '2019-06-10', null, false, null),
        (3,2, 5, '2019-06-15', null, false, null);
