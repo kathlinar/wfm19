@@ -35,7 +35,7 @@
         </b-navbar>
     </div>
     <p class="paragraph">Please select your desired time and date</p>
-    <datetime  class="text-center" type="date" v-model="datetime"></datetime>
+    <datetime  class="text-center" type="date" v-model="datetime" :min-datetime="minDateTime"></datetime>
     <b-table id="table" style="padding-top: 3%; padding-left: 15%; padding-right: 15%" bordered outlined striped responsive
                  :fields="fields" :items="items" class="text-center">
         <template slot="reserve" scope="item">
@@ -61,6 +61,7 @@
             modalShow: false,
             resTxt: '',
             email: '',
+            minDateTime: '',
             fields: {
                 id: {
                     label: 'ID',
@@ -105,6 +106,7 @@
             this.baseUrl = window.location.origin + "/";
             var url = new URL(window.location.href);
             this.email = url.searchParams.get("email");
+            this.minDateTime = new Date().toISOString();
             /*axios.get(this.baseUrl + "getExperiences/"+this.email).then(response => {
                 this.items = response.data;
             });*/
