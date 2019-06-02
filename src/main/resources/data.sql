@@ -9,8 +9,7 @@ VALUES (1, '1990-01-01', 'Max', 'Musterguide 1', 'GUIDE'),
 INSERT INTO Person (id,email,first_name,last_name,password,type)
 VALUES(6,'k.riginding@gmail.com','Kathleen','Riginding','1234wfm','GUIDE'),
       (7,'e1427322@student.tuwien.ac.at','Christoph','Huber','test','GUIDE'),
-      (8,'e1426163@student.tuwien.ac.at','Samuel','Alkin','test','GUIDE'),
-      (9,'samuel.alkin@gmx.at','Samuel','Alkin','test','CUSTOMER');
+      (8,'e1426987@student.tuwien.ac.at','Daniel','Ly','12345','GUIDE');
 
 -- addresses
 INSERT INTO Address (id, city, street, zip)
@@ -29,10 +28,10 @@ VALUES (1, 'Tagesausflug von Wien zum Stift Melk und ins Donautal', '06:00', 30,
         '01:30', 300, 'Abendkonzert im Schloss Schönbrunn', 45, 'CONCERT', 5);
 
 -- reservations
-INSERT INTO Reservation (id,experience_id, person_id, reservation_date, attended, deleted, feedback)
-VALUES (1,1, 3, '2019-05-01', true, false, 'was a great day with my lads'),
-       (2,2, 4, '2019-06-10', null, false, null),
-       (3,2, 5, '2019-06-15', null, false, null);
+INSERT INTO Reservation (experience_id, person_id, reservation_date, attended, deleted, feedback)
+VALUES (1, 3, '2019-05-01', true, false, 'was a great day with my lads'),
+       (2, 4, '2019-06-10', null, false, null),
+       (2, 5, '2019-06-15', null, false, null);
 
 -- person_experience
 INSERT INTO person_experience(person_id, experience_id)
