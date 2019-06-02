@@ -59,9 +59,6 @@ public class MainController {
 
     private Map<String, LocalDateTime> lastSelectedDate = new HashMap<>();
 
-    private Person person = new Person();
-    private Experience experience = new Experience();
-    //private LocalDateTime date = LocalDateTime.now();
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() {
@@ -78,8 +75,7 @@ public class MainController {
         person.setPassword(payload.get("password").toString());
         person.setType(Enums.PersonType.CUSTOMER);
         if( this.personRepository.findByEmail(person.getEmail()) == null){
-            Person p = this.personRepository.saveAndFlush(person);
-            //createCamundaUser(p);
+            this.personRepository.saveAndFlush(person);
             return new ResponseEntity(HttpStatus.OK);
         }else
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -99,7 +95,8 @@ public class MainController {
             List<Task> tasks = this.taskService.createTaskQuery()
                     .processDefinitionId(this.customerInstances.get(person.getEmail()).getProcessDefinitionId()).list();
 
-            this.taskService.complete(tasks.get(0).getId());
+            if(tasks.get(0).getName().equals("Log in with mail"))
+                this.taskService.complete(tasks.get(0).getId());
 
 
             return new ResponseEntity(HttpStatus.OK);
@@ -121,7 +118,8 @@ public class MainController {
 
         this.runtimeService.setVariable(this.customerInstances.get(payload.get("email").toString()).getId(),"date",Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 
-        this.taskService.complete(tasks.get(0).getId());
+        if(tasks.get(0).getName().equals("Select Date"))
+            this.taskService.complete(tasks.get(0).getId());
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -129,35 +127,20 @@ public class MainController {
     @RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
     public ResponseEntity makeReservation(@RequestBody Map<String, Object> payload){
 
-        this.experience = this.experienceRepository.getOne(Long.parseLong(payload.get("id").toString()));
-        this.person = this.personRepository.findByEmail(payload.get("email").toString());
-        this.reservationService.makeReservation(this.experience,this.person,this.lastSelectedDate.get(payload.get("email").toString()));
+        Experience experience = this.experienceRepository.getOne(Long.parseLong(payload.get("id").toString()));
+        Person person = this.personRepository.findByEmail(payload.get("email").toString());
+        this.reservationService.makeReservation(experience, person,this.lastSelectedDate.get(payload.get("email").toString()));
 
         List<Task> tasks = taskService.createTaskQuery()
-                .processDefinitionId(this.customerInstances.get(this.person.getEmail()).getProcessDefinitionId()).list();
+                .processDefinitionId(this.customerInstances.get(person.getEmail()).getProcessDefinitionId()).list();
 
-        this.runtimeService.setVariable(this.customerInstances.get(this.person.getEmail()).getId(),"searchCancelled",false);
+        this.runtimeService.setVariable(this.customerInstances.get(person.getEmail()).getId(),"searchCancelled",false);
 
-        this.taskService.complete(tasks.get(0).getId());
+        if(tasks.get(0).getName().equals("Choose desired experiences"))
+            this.taskService.complete(tasks.get(0).getId());
 
         return new ResponseEntity(HttpStatus.OK);
     }
-/*
-    @RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
-    public ResponseEntity makeReservation(@RequestBody Map<String ,Object> payload){
-        List<Task> tasks = taskService.createTaskQuery()
-                .processDefinitionId(this.customerInstances.get(payload.get("email").toString()).getProcessDefinitionId()).list();
-
-        Experience[] experiences = (Experience[]) runtimeService.getVariable(this.customerInstances.get(payload.get("email")).getId(),"allExperiences");
-        //        this.experience = experienceRepository.getOne(experiences[0].getId());
-        //this.person = personRepository.getOne(Long.parseLong(this.customerInstances.get(payload.get("email")).getId
-        //        ()));
-        //makeReservationService(experience, person);
-
-        System.out.println(experiences[0]);
-        taskService.complete(tasks.get(0).getId());
-        return new ResponseEntity(HttpStatus.OK);
-    }*/
 
     @RequestMapping(value = "/getExperiences/{email}", method = RequestMethod.GET)
     public ResponseEntity<List<ExperienceFrontend>> getExperiences(@PathVariable("email") String email){
