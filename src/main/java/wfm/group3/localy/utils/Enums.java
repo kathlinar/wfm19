@@ -3,7 +3,7 @@ package wfm.group3.localy.utils;
 public class Enums {
 
     public enum ExperienceType {
-        SIGHTSEEING, NIGHTLIFE, GAMES, MUSEUM, SPECIAL, CONCERT;
+        SIGHTSEEING, NIGHTLIFE, GAMES, MUSEUM, SPECIAL, CONCERT, SPORTS;
     }
 
     public enum PersonType {
