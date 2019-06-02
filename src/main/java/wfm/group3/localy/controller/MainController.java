@@ -1,5 +1,6 @@
 package wfm.group3.localy.controller;
 
+import com.sun.mail.iap.Response;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.authorization.*;
 import org.camunda.bpm.engine.identity.Group;
@@ -68,6 +69,23 @@ public class MainController {
         return "index.html";
     }
 
+    @RequestMapping(value = "/start", method = RequestMethod.POST)
+    public ResponseEntity start(@RequestBody Map<String, Object> payload) {
+        Person person = this.personRepository.findByEmail(payload.get("email").toString());
+        if( person != null) {
+            if (this.customerInstances.containsKey(person.getEmail())) {
+                this.runtimeService.createProcessInstanceByKey("Customer")
+                        .setVariables(payload)
+                        .setVariable("loggedIn", true)
+                        .execute();
+                this.lastRecommendedExperiences = new HashMap<>();
+                this.lastSelectedDate = new HashMap<>();
+                return new ResponseEntity(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity(HttpStatus.FAILED_DEPENDENCY);
+    }
+
     @RequestMapping(value = "/newUser", method = RequestMethod.POST)
     public ResponseEntity createNewUser(@RequestBody Map<String, Object> payload){
 
@@ -94,6 +112,7 @@ public class MainController {
             if (!this.customerInstances.containsKey(person.getEmail()))
                 this.customerInstances.put(person.getEmail(), this.runtimeService.createProcessInstanceByKey("Customer")
                     .setVariables(payload)
+                        .setVariable("loggedIn",false)
                     .execute());
 
             List<Task> tasks = this.taskService.createTaskQuery()

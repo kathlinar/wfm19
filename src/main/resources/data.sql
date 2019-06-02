@@ -8,7 +8,9 @@ VALUES (1, '1990-01-01', 'Max', 'Musterguide 1', 'GUIDE'),
 
 INSERT INTO Person (id,email,first_name,last_name,password,type)
 VALUES(6,'k.riginding@gmail.com','Kathleen','Riginding','1234wfm','GUIDE'),
-      (7,'e1427322@student.tuwien.ac.at','Christoph','Huber','test','GUIDE');
+      (7,'e1427322@student.tuwien.ac.at','Christoph','Huber','test','GUIDE'),
+      (8,'e1426163@student.tuwien.ac.at','Samuel','Alkin','test','GUIDE'),
+      (9,'samuel.alkin@gmx.at','Samuel','Alkin','test','CUSTOMER');
 
 -- addresses
 INSERT INTO Address (id, city, street, zip)

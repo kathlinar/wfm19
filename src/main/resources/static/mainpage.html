@@ -86,13 +86,28 @@
 
         },
         methods:{
+            start(){
+                let _this = this
+                console.log(this.email);
+                axios.post('start', {
+                    email: this.email,
+                }).then(function (response) {
+                    console.log(response);
+                    _this.items = [];
+                    window.location.href = "mainpage.html?email="+_this.email;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            },
             reserve(item) {
+                let _this = this;
                 if(this.email !== "") {
                     axios.post('makeReservation', {
                         email: this.email,
                         id: item.id,
                     }).then(function (response) {
                         console.log(response);
+                        _this.start();
                     })
                     .catch(function (error) {
                         console.log(error);
