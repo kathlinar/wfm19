@@ -34,11 +34,12 @@ public class ReservationService {
     }
 
 
-    public void makeReservation(Experience experience, Person person, LocalDateTime date) {
+    public void makeReservation(Experience experience, Person person, LocalDateTime date, String processDefinitionId) {
         Reservation reservation = new Reservation();
         reservation.setPersonId(person.getId());
         reservation.setExperienceId(experience.getId());
         reservation.setReservationDate(date);
+        reservation.setProcessDefinitionId(processDefinitionId);
 
         reservationRepository.save(reservation);
 

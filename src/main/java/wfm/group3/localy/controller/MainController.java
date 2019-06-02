@@ -14,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import wfm.group3.localy.entity.Experience;
-import wfm.group3.localy.entity.ExperienceFrontend;
-import wfm.group3.localy.entity.Person;
-import wfm.group3.localy.entity.Reservation;
+import wfm.group3.localy.entity.*;
 import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.PersonRepository;
 import wfm.group3.localy.repository.ReservationRepository;
@@ -36,7 +33,7 @@ import static org.camunda.bpm.engine.authorization.Authorization.AUTH_TYPE_GRANT
 @Controller
 public class MainController {
 
-    private Map<String, ProcessInstance> customerInstances = new HashMap<>();
+    private Map<String, List<ProcessInstance>> customerInstances = new HashMap<>();
 
     @Autowired
     private RuntimeService runtimeService;
@@ -71,10 +68,10 @@ public class MainController {
         Person person = this.personRepository.findByEmail(payload.get("email").toString());
         if( person != null) {
             if (this.customerInstances.containsKey(person.getEmail())) {
-                this.runtimeService.createProcessInstanceByKey("Customer")
+                this.customerInstances.get(person.getEmail()).add(this.runtimeService.createProcessInstanceByKey("Customer")
                         .setVariables(payload)
                         .setVariable("loggedIn", true)
-                        .execute();
+                        .execute());
                 this.lastRecommendedExperiences.remove(payload.get("email").toString());
                 this.lastSelectedDate.remove(payload.get("email").toString());
                 return new ResponseEntity(HttpStatus.OK);
@@ -102,17 +99,18 @@ public class MainController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity login(@RequestBody Map<String,Object> payload) {
         Person person = this.personRepository.findByEmail(payload.get("email").toString());
-        System.out.println(payload.get("password"));
         if( person != null &&  person.getPassword().equals(payload.get("password").toString())) {
 
-            if (!this.customerInstances.containsKey(person.getEmail()))
-                this.customerInstances.put(person.getEmail(), this.runtimeService.createProcessInstanceByKey("Customer")
-                    .setVariables(payload)
+            if (!this.customerInstances.containsKey(person.getEmail())) {
+                List<ProcessInstance> list =  new ArrayList();
+                list.add(this.runtimeService.createProcessInstanceByKey("Customer")
+                        .setVariables(payload)
                         .setVariable("loggedIn",false)
-                    .execute());
-
+                        .execute());
+                this.customerInstances.put(person.getEmail(), list);
+            }
             List<Task> tasks = this.taskService.createTaskQuery()
-                    .processDefinitionId(this.customerInstances.get(person.getEmail()).getProcessDefinitionId()).list();
+                    .processDefinitionId(this.customerInstances.get(person.getEmail()).get(this.customerInstances.get(person.getEmail()).size()-1).getProcessDefinitionId()).list();
 
             if(tasks.get(0).getName().equals("Log in with mail"))
                 this.taskService.complete(tasks.get(0).getId());
@@ -126,8 +124,9 @@ public class MainController {
 
     @RequestMapping(value = "/selectDate", method = RequestMethod.POST)
     public ResponseEntity selectDate(@RequestBody Map<String ,Object> payload){
+        int posNewestInstance = this.customerInstances.get(payload.get("email").toString()).size()-1;
         List<Task> tasks = this.taskService.createTaskQuery()
-                .processDefinitionId(this.customerInstances.get(payload.get("email").toString()).getProcessDefinitionId()).list();
+                .processDefinitionId(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getProcessDefinitionId()).list();
 
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -135,8 +134,8 @@ public class MainController {
         System.out.println(text);
         LocalDate localDate = LocalDate.parse(text,formatter);
         this.lastSelectedDate.put(payload.get("email").toString(),LocalDateTime.parse(text,formatter));
-        this.runtimeService.setVariable(this.customerInstances.get(payload.get("email").toString()).getId(),"date",Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-        System.out.println(this.runtimeService.getVariable(this.customerInstances.get(payload.get("email").toString()).getId(),"date"));
+        this.runtimeService.setVariable(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getId(),"date",Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+        System.out.println(this.runtimeService.getVariable(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getId(),"date"));
         if(tasks.get(0).getName().equals("Select Date"))
             System.out.println("Select Date Task found");
             this.taskService.complete(tasks.get(0).getId());
@@ -147,14 +146,17 @@ public class MainController {
     @RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
     public ResponseEntity makeReservation(@RequestBody Map<String, Object> payload){
 
-        Experience experience = this.experienceRepository.getOne(Long.parseLong(payload.get("id").toString()));
         Person person = this.personRepository.findByEmail(payload.get("email").toString());
-        this.reservationService.makeReservation(experience, person,this.lastSelectedDate.get(payload.get("email").toString()));
+        int posNewestInstance = this.customerInstances.get(person.getEmail()).size()-1;
+
+        Experience experience = this.experienceRepository.getOne(Long.parseLong(payload.get("id").toString()));
+
+        this.reservationService.makeReservation(experience, person, this.lastSelectedDate.get(payload.get("email").toString()),this.customerInstances.get(person.getEmail()).get(posNewestInstance).getProcessDefinitionId());
 
         List<Task> tasks = taskService.createTaskQuery()
-                .processDefinitionId(this.customerInstances.get(person.getEmail()).getProcessDefinitionId()).list();
+                .processDefinitionId(this.customerInstances.get(person.getEmail()).get(posNewestInstance).getProcessDefinitionId()).list();
 
-        this.runtimeService.setVariable(this.customerInstances.get(person.getEmail()).getId(),"searchCancelled",false);
+        this.runtimeService.setVariable(this.customerInstances.get(person.getEmail()).get(posNewestInstance).getId(),"searchCancelled",false);
 
         if(tasks.get(0).getName().equals("Choose desired experiences"))
             this.taskService.complete(tasks.get(0).getId());
@@ -179,12 +181,12 @@ public class MainController {
     }
 
     @RequestMapping(value = "/getBookedExperiences/{email}", method = RequestMethod.GET)
-    public ResponseEntity<List<ExperienceFrontend>> getBookedExperiences(@PathVariable("email") String email){
+    public ResponseEntity<List<BookedExperiences>> getBookedExperiences(@PathVariable("email") String email){
         Person person = this.personRepository.findByEmail(email);
         if(person != null){
-            List<ExperienceFrontend> result = new ArrayList<>();
+            List<BookedExperiences> result = new ArrayList<>();
             for(Reservation reservation : this.reservationRepository.findReservationsByPersonId(person.getId())){
-                result.add(new ExperienceFrontend(this.experienceRepository.getOne(reservation.getExperienceId())));
+                result.add(new BookedExperiences(this.experienceRepository.getOne(reservation.getExperienceId()),reservation));
             }
             return new ResponseEntity<>(result, HttpStatus.OK);
         }

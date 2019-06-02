@@ -42,6 +42,10 @@
                     label: 'ID',
                     sortable: true
                 },
+                name:{
+                    label: 'Name',
+                    sortable: true
+                },
                 description: {
                     label: 'Description',
                     sortable: false
@@ -50,13 +54,12 @@
                     label: 'Duration',
                     sortable: false
                 },
-
-                max_group_size: {
-                    label: 'Max. group size',
-                    sortable: true
+                address: {
+                    label: 'Address',
+                    sortable: false
                 },
-                name:{
-                    label: 'Name',
+                maxGroupSize: {
+                    label: 'Max. group size',
                     sortable: true
                 },
                 price:{
@@ -80,15 +83,13 @@
             var url = new URL(window.location.href);
             this.email = url.searchParams.get("email");
             axios.get(this.baseUrl + "getExperiences/"+this.email).then(response => {
-                console.log(response.data);
                 this.items = response.data;
             });
             this.pollData();
         },
         methods:{
             start(){
-                let _this = this
-                console.log(this.email);
+                let _this = this;
                 axios.post('start', {
                     email: this.email,
                 }).then(function (response) {

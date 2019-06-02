@@ -1,15 +1,16 @@
 package wfm.group3.localy.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @IdClass(Reservation.IdClass.class)
 public class Reservation implements Serializable{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Id
     private Long personId;
@@ -29,9 +30,29 @@ public class Reservation implements Serializable{
     @Column
     private String feedback;
 
+    @Column
+    private String processDefinitionId;
+
     static class IdClass implements Serializable {
+        private Long id;
         private Long personId;
         private Long experienceId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
     public Long getPersonId() {

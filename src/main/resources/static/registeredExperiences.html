@@ -22,6 +22,9 @@
         <template slot="cancel" scope="item">
             <b-btn class="text-center" size="sm" @click="cancel(item.item)">Cancel</b-btn>
         </template>
+        <template slot="attend" scope="item">
+            <b-btn class="text-center" size="sm" @click="attend(item.item)">Attend</b-btn>
+        </template>
     </b-table>
     <!--<div class="text-center">
         <b-button>Make reservation</b-button>
@@ -36,26 +39,21 @@
             datetime: '',
             email: '',
             fields: {
-                id: {
-                    label: 'ID',
+                name:{
+                    label: 'Name',
                     sortable: true
                 },
                 description: {
                     label: 'Description',
                     sortable: false
                 },
+                reservationDate: {
+                    label: 'Reservation Date',
+                    sortable: true
+                },
                 duration: {
                     label: 'Duration',
                     sortable: false
-                },
-
-                max_group_size: {
-                    label: 'Max. group size',
-                    sortable: true
-                },
-                name:{
-                    label: 'Name',
-                    sortable: true
                 },
                 price:{
                     label: 'Price',
@@ -65,8 +63,15 @@
                     label: 'Type',
                     sortable: true
                 },
+                address: {
+                    label: 'Address',
+                    sortable: false
+                },
                 cancel:{
                     label: 'cancel',
+                },
+                attend: {
+                    label: 'attend'
                 }
 
             },
@@ -77,15 +82,19 @@
             var url = new URL(window.location.href);
             this.email = url.searchParams.get("email");
             axios.get(this.baseUrl + "getBookedExperiences/"+this.email).then(response => {
-                console.log(response.data);
                 this.items = response.data;
             });
 
         },
         methods:{
             cancel(item) {
+                //TODO
                 console.log(item);
             },
+            attend(item){
+                //TODO
+                console.log(item)
+            }
 
         }
 

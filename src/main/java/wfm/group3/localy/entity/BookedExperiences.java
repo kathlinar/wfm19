@@ -2,17 +2,11 @@ package wfm.group3.localy.entity;
 
 import wfm.group3.localy.utils.Enums;
 
-import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
 
-public class ExperienceFrontend implements Serializable {
-
-
-    private Long id;
+public class BookedExperiences {
 
     private String name;
 
@@ -22,29 +16,21 @@ public class ExperienceFrontend implements Serializable {
 
     private BigDecimal price;
 
-    private int maxGroupSize;
-
     private String address;
 
     private LocalTime duration;
 
-    public ExperienceFrontend(Experience experience) {
-        this.id = experience.getId();
+    private LocalDateTime reservationDate;
+
+    public BookedExperiences(Experience experience, Reservation reservation) {
         this.name = experience.getName();
         this.description = experience.getDescription();
         this.type = experience.getType();
         this.price = experience.getPrice();
-        this.maxGroupSize = experience.getMaxGroupSize();
         this.address = experience.getLocation().getCity() +", " + experience.getLocation().getStreet();
         this.duration = experience.getDuration();
-    }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.reservationDate = reservation.getReservationDate();
     }
 
     public String getName() {
@@ -79,14 +65,6 @@ public class ExperienceFrontend implements Serializable {
         this.price = price;
     }
 
-    public int getMaxGroupSize() {
-        return maxGroupSize;
-    }
-
-    public void setMaxGroupSize(int maxGroupSize) {
-        this.maxGroupSize = maxGroupSize;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -103,13 +81,11 @@ public class ExperienceFrontend implements Serializable {
         this.duration = duration;
     }
 
-    @Override
-    public String toString() {
-        return "Experience{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", type=" + type +
-                '}';
+    public LocalDateTime getReservationDate() {
+        return reservationDate;
+    }
+
+    public void setReservationDate(LocalDateTime reservationDate) {
+        this.reservationDate = reservationDate;
     }
 }

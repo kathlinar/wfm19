@@ -29,10 +29,10 @@ VALUES (1, 'Tagesausflug von Wien zum Stift Melk und ins Donautal', '06:00', 30,
         '01:30', 300, 'Abendkonzert im Schloss Schönbrunn', 45, 'CONCERT', 5);
 
 -- reservations
-INSERT INTO Reservation (experience_id, person_id, reservation_date, attended, deleted, feedback)
-VALUES (1, 3, '2019-05-01', true, false, 'was a great day with my lads'),
-       (2, 4, '2019-06-10', null, false, null),
-       (2, 5, '2019-06-15', null, false, null);
+INSERT INTO Reservation (id,experience_id, person_id, reservation_date, attended, deleted, feedback)
+VALUES (1,1, 3, '2019-05-01', true, false, 'was a great day with my lads'),
+       (2,2, 4, '2019-06-10', null, false, null),
+       (3,2, 5, '2019-06-15', null, false, null);
 
 -- person_experience
 INSERT INTO person_experience(person_id, experience_id)
