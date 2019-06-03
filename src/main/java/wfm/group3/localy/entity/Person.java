@@ -13,7 +13,7 @@ public class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_generator")
-    @SequenceGenerator(name="person_generator", sequenceName = "pers_seq", initialValue = 11)
+    @SequenceGenerator(name="person_generator", sequenceName = "pers_seq", initialValue = 12)
     private Long id;
 
     @Column
