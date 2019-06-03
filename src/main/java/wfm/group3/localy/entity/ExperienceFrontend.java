@@ -38,7 +38,8 @@ public class ExperienceFrontend implements Serializable {
         this.maxGroupSize = experience.getMaxGroupSize();
         this.address = experience.getLocation().getCity() + ", " + experience.getLocation().getStreet();
         this.duration = String.format("%02d", experience.getDuration().toHoursPart()) + ":" + String.format("%02d", experience.getDuration().toMinutesPart());
-        this.startTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(experience.getStartTime());
+        if(experience.getStartTime() != null)
+            this.startTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(experience.getStartTime());
     }
 
     public Long getId() {

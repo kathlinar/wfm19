@@ -46,7 +46,8 @@
         <b-button :href="'registeredExperiences.html?email='+email">Booked Experiences</b-button>
     </div>
 
-    <b-modal id="reservation" v-model="modalShow" title="Reservation" hide-footer>
+    <b-modal id="reservation" v-model="modalShow" title="Reservation" hide-footer
+             @hidden="start">
         <div class="d-block text-center">
             <h4>{{resTxt}}</h4>
         </div>
@@ -119,15 +120,17 @@
         methods:{
             start(){
                 let _this = this;
-                axios.post('start', {
-                    email: this.email,
-                }).then(function (response) {
-                    console.log(response);
-                    _this.items = [];
-                    window.location.href = "mainpage.html?email="+_this.email;
-                }).catch(function (error) {
-                    console.log(error);
-                });
+                if(!this.resTxt.includes("Their was an error")){
+                    axios.post('start', {
+                        email: this.email,
+                    }).then(function (response) {
+                        console.log(response);
+                        _this.items = [];
+                        window.location.href = "mainpage.html?email="+_this.email;
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
             },
             reserve(item) {
                 let _this = this;
@@ -138,7 +141,7 @@
                     }).then(function (response) {
                         _this.resTxt = 'Reservation of '+item.name+' was successfully';
                         _this.modalShow = true;
-                        _this.start();
+                       // _this.start();
                     })
                     .catch(function (error) {
                         _this.resTxt = 'Their was an error on the reservation of '+item.name;
