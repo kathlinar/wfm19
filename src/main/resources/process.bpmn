@@ -306,7 +306,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0nmokb9" sourceRef="StartEvent_1d90i2h" targetRef="Task_05bfh2y" />
     <bpmn:sequenceFlow id="SequenceFlow_1h2wqvo" sourceRef="Task_05bfh2y" targetRef="EndEvent_1kgogup" />
     <bpmn:sequenceFlow id="SequenceFlow_1fpo0jl" name="no" sourceRef="ExclusiveGateway_11e0ioe" targetRef="ServiceTask_1xo20fj" />
-    <bpmn:exclusiveGateway id="ExclusiveGateway_11e0ioe" name="group full?">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_11e0ioe" name="group full?" default="SequenceFlow_1fpo0jl">
       <bpmn:incoming>SequenceFlow_1x31tty</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1fpo0jl</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_00uqfc1</bpmn:outgoing>
