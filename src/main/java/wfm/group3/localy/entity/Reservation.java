@@ -1,32 +1,30 @@
 package wfm.group3.localy.entity;
 
+import wfm.group3.localy.utils.Enums;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
-@IdClass(Reservation.IdClass.class)
-public class Reservation implements Serializable{
+public class Reservation implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "res_generator")
-    @SequenceGenerator(name="reservation_generator", sequenceName = "res_seq", initialValue = 4)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservation_generator")
+    @SequenceGenerator(name = "reservation_generator", sequenceName = "res_seq", initialValue = 4)
     private Long reservationId;
 
-    @Id
+    @Column
     private Long personId;
 
-    @Id
+    @Column
     private Long experienceId;
 
     @Column
-    private LocalDateTime reservationDate;
+    private LocalDate reservationDate;
 
     @Column
     private Boolean attended;
-
-    @Column
-    private Boolean deleted;
 
     @Column
     private String feedback;
@@ -34,35 +32,9 @@ public class Reservation implements Serializable{
     @Column
     private String processDefinitionId;
 
-    static class IdClass implements Serializable {
-        private Long reservationId;
-        private Long personId;
-        private Long experienceId;
-
-        public Long getReservationId() {
-            return reservationId;
-        }
-
-        public void setReservationId(Long reservationId) {
-            this.reservationId = reservationId;
-        }
-
-        public Long getPersonId() {
-            return personId;
-        }
-
-        public void setPersonId(Long personId) {
-            this.personId = personId;
-        }
-
-        public Long getExperienceId() {
-            return experienceId;
-        }
-
-        public void setExperienceId(Long experienceId) {
-            this.experienceId = experienceId;
-        }
-    }
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Enums.ReservationStatus status;
 
     public void setReservationId(Long reservationId) {
         this.reservationId = reservationId;
@@ -92,11 +64,11 @@ public class Reservation implements Serializable{
         this.experienceId = experienceId;
     }
 
-    public LocalDateTime getReservationDate() {
+    public LocalDate getReservationDate() {
         return reservationDate;
     }
 
-    public void setReservationDate(LocalDateTime reservationDate) {
+    public void setReservationDate(LocalDate reservationDate) {
         this.reservationDate = reservationDate;
     }
 
@@ -108,19 +80,23 @@ public class Reservation implements Serializable{
         this.attended = attended;
     }
 
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
-
     public String getFeedback() {
         return feedback;
     }
 
     public void setFeedback(String feedback) {
         this.feedback = feedback;
+    }
+
+    public Enums.ReservationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(Enums.ReservationStatus status) {
+        this.status = status;
+    }
+
+    public Long getReservationId() {
+        return reservationId;
     }
 }

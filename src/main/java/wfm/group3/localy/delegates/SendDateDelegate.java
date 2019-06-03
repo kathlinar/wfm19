@@ -2,33 +2,30 @@ package wfm.group3.localy.delegates;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import wfm.group3.localy.utils.JavaMailUtil;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
 public class SendDateDelegate implements JavaDelegate {
 
     private final Logger LOGGER = Logger.getLogger(SendDateDelegate.class.getName());
 
+    private static DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(DelegateExecution delegateExecution) {
         LOGGER.info(delegateExecution.hasVariable("date") ? "yes" : "no");
         LOGGER.info(delegateExecution.getVariable("date").toString());
-        Date date = (Date) delegateExecution.getVariable("date");
+        LocalDate date = LocalDate.parse(delegateExecution.getVariable("date").toString(), formatter);
         String email = (String) delegateExecution.getVariable("email");
         LOGGER.info("Email extracted " + email);
-        LOGGER.info("Date extracted " + date.toString());
+        LOGGER.info("Date extracted " + formatter.format(date));
         LOGGER.info("Sending Message 'ExpRequestReceived'");
         delegateExecution.getProcessEngineServices().getRuntimeService()
                 .createMessageCorrelation("ExpRequestReceived")
-                .setVariable("date", date)
-                .setVariable("email",email)
+                .setVariable("date", formatter.format(date))
+                .setVariable("email", email)
                 .correlate();
-        
-        // For convenience this is tested here (2nd task in Camunda), with our mail address
-        // TODO: delete
-        //JavaMailUtil.sendMail(email,"User Confirmation");
-        
     }
 }

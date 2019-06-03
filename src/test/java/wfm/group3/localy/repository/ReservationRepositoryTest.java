@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import wfm.group3.localy.entity.Reservation;
+import wfm.group3.localy.utils.Enums;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,29 +21,29 @@ public class ReservationRepositoryTest {
     ReservationRepository reservationRepository;
 
     @Before
-    public void initialize(){
+    public void initialize() {
         Reservation res1 = new Reservation();
         res1.setPersonId(1L);
         res1.setExperienceId(1L);
         res1.setAttended(false);
-        res1.setDeleted(false);
+        res1.setStatus(Enums.ReservationStatus.CANCELLED);
         res1.setFeedback("Test feedback");
-        res1.setReservationDate(LocalDateTime.now());
+        res1.setReservationDate(LocalDate.now());
 
         Reservation res2 = new Reservation();
         res2.setPersonId(1L);
         res2.setExperienceId(2L);
         res2.setAttended(true);
-        res2.setDeleted(false);
+        res1.setStatus(Enums.ReservationStatus.CANCELLED);
         res2.setFeedback("Test feedback");
-        res2.setReservationDate(LocalDateTime.now());
+        res2.setReservationDate(LocalDate.now());
 
         reservationRepository.save(res1);
         reservationRepository.save(res2);
     }
 
     @Test
-    public void testFindReservationsByPersonId(){
-        assertEquals(reservationRepository.findReservationsByPersonId(1L).size(),2);
+    public void testFindReservationsByPersonId() {
+        assertEquals(reservationRepository.findReservationsByPersonId(1L).size(), 2);
     }
 }

@@ -2,15 +2,14 @@ package wfm.group3.localy.entity;
 
 import wfm.group3.localy.utils.Enums;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 public class ExperienceFrontend implements Serializable {
 
+    private static DateTimeFormatter formatter = DateTimeFormatter.ISO_TIME;
 
     private Long id;
 
@@ -26,7 +25,9 @@ public class ExperienceFrontend implements Serializable {
 
     private String address;
 
-    private LocalTime duration;
+    private String duration;
+
+    private String startTime;
 
     public ExperienceFrontend(Experience experience) {
         this.id = experience.getId();
@@ -35,8 +36,9 @@ public class ExperienceFrontend implements Serializable {
         this.type = experience.getType();
         this.price = experience.getPrice();
         this.maxGroupSize = experience.getMaxGroupSize();
-        this.address = experience.getLocation().getCity() +", " + experience.getLocation().getStreet();
-        this.duration = experience.getDuration();
+        this.address = experience.getLocation().getCity() + ", " + experience.getLocation().getStreet();
+        this.duration = String.format("%02d", experience.getDuration().toHoursPart()) + ":" + String.format("%02d", experience.getDuration().toMinutesPart());
+        this.startTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(experience.getStartTime());
     }
 
     public Long getId() {
@@ -95,12 +97,12 @@ public class ExperienceFrontend implements Serializable {
         this.address = address;
     }
 
-    public LocalTime getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(LocalTime duration) {
-        this.duration = duration;
+    public String getStartTime() {
+        return startTime;
     }
 
     @Override

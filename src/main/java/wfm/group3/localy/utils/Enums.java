@@ -3,10 +3,14 @@ package wfm.group3.localy.utils;
 public class Enums {
 
     public enum ExperienceType {
-        SIGHTSEEING, NIGHTLIFE, GAMES, MUSEUM, SPECIAL, CONCERT, SPORTS;
+        SIGHTSEEING, NIGHTLIFE, GAMES, MUSEUM, SPECIAL, CONCERT, SPORTS
     }
 
     public enum PersonType {
-        CUSTOMER, GUIDE;
+        CUSTOMER, GUIDE
+    }
+
+    public enum ReservationStatus {
+        PENDING, CANCELLED, CONFIRMED
     }
 }

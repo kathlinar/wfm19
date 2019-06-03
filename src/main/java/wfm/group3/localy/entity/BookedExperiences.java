@@ -3,7 +3,8 @@ package wfm.group3.localy.entity;
 import wfm.group3.localy.utils.Enums;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class BookedExperiences {
@@ -21,9 +22,11 @@ public class BookedExperiences {
 
     private String address;
 
-    private LocalTime duration;
+    private Duration duration;
 
-    private LocalDateTime reservationDate;
+    private LocalTime startTime;
+
+    private LocalDate reservationDate;
 
     public BookedExperiences(Experience experience, Reservation reservation) {
         this.experienceId = experience.getId();
@@ -31,8 +34,9 @@ public class BookedExperiences {
         this.description = experience.getDescription();
         this.type = experience.getType();
         this.price = experience.getPrice();
-        this.address = experience.getLocation().getCity() +", " + experience.getLocation().getStreet();
+        this.address = experience.getLocation().getCity() + ", " + experience.getLocation().getStreet();
         this.duration = experience.getDuration();
+        this.startTime = experience.getStartTime();
 
         this.reservationDate = reservation.getReservationDate();
     }
@@ -86,19 +90,23 @@ public class BookedExperiences {
         this.address = address;
     }
 
-    public LocalTime getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    public void setDuration(LocalTime duration) {
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
-    public LocalDateTime getReservationDate() {
+    public LocalDate getReservationDate() {
         return reservationDate;
     }
 
-    public void setReservationDate(LocalDateTime reservationDate) {
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setReservationDate(LocalDate reservationDate) {
         this.reservationDate = reservationDate;
     }
 }

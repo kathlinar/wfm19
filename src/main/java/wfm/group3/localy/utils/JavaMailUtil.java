@@ -2,22 +2,11 @@ package wfm.group3.localy.utils;
 
 //import java.util.HashMap;
 //import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import wfm.group3.localy.entity.Person;
-import wfm.group3.localy.entity.Reservation;
-import wfm.group3.localy.repository.ExperienceRepository;
-import wfm.group3.localy.repository.PersonRepository;
-import wfm.group3.localy.repository.ReservationRepository;
 
-import java.util.Properties;
-
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 public class JavaMailUtil {
 	public static void sendMail(String recipient, String detail, String purpose) throws Exception {
@@ -76,7 +65,7 @@ public class JavaMailUtil {
 			message.setFrom(new InternetAddress(myAccountEmail));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			message.setSubject("Your local.ly experience!");
-			String emailContent = "<h2>Thank you for reserving a local.ly experience</h2><br><p>Your local guides are" +
+			String emailContent = "<h2>Thank you for reserving a local.ly experience</h2><br><p>Your local guides are " +
 					"excited to meet you. Here's your requested experience:</p>" + detail + "<br> " +
 					"<p>See you!</p></br><p>local.ly</p>";
 			message.setContent(emailContent, "text/html");

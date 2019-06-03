@@ -61,11 +61,13 @@
         <dependency>
             <groupId>org.camunda.spin</groupId>
             <artifactId>camunda-spin-core</artifactId>
+            <version>1.6.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.camunda.spin</groupId>
             <artifactId>camunda-spin-dataformat-all</artifactId>
+            <version>1.6.3</version>
         </dependency>
         <dependency>
             <groupId>org.camunda.spin</groupId>

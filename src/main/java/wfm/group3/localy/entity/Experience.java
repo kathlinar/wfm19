@@ -5,6 +5,7 @@ import wfm.group3.localy.utils.Enums;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +37,10 @@ public class Experience implements Serializable {
     private Address location;
 
     @Column
-    private LocalTime duration;
+    private Duration duration;
+
+    @Column
+    private LocalTime startTime;
 
     @ManyToMany(mappedBy = "offers")
     private Set<Person> offeredBy = new HashSet<>();
@@ -97,11 +101,11 @@ public class Experience implements Serializable {
         this.location = location;
     }
 
-    public LocalTime getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    public void setDuration(LocalTime duration) {
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
@@ -111,6 +115,14 @@ public class Experience implements Serializable {
 
     public void setOfferedBy(Set<Person> offeredBy) {
         this.offeredBy = offeredBy;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
     }
 
     @Override
