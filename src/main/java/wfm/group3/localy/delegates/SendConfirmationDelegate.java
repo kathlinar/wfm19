@@ -11,6 +11,7 @@ import wfm.group3.localy.repository.ReservationRepository;
 import wfm.group3.localy.utils.JavaMailUtil;
 
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -39,7 +40,9 @@ public class SendConfirmationDelegate implements JavaDelegate {
         if (reservationOptional.isPresent()) {
             Optional<Experience> experienceOptional = this.experienceRepository.findById(reservationOptional.get().getExperienceId());
             if (experienceOptional.isPresent()) {
-                String detail = experienceOptional.get().getName() + ", on " + reservationOptional.get().getReservationDate().format(formatter);
+                String startTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(experienceOptional.get().getStartTime());
+                String detail = experienceOptional.get().getName() + " (" + experienceOptional.get().getLocation().getInfoString() + "), on "
+                        + reservationOptional.get().getReservationDate().format(formatter) + " starting at " + startTime;
 
                 try {
                     JavaMailUtil.sendMail(email, detail, "User Confirmation");

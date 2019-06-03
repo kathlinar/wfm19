@@ -313,7 +313,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="EndEvent_0oh38lr" name="Notify customer about group size">
       <bpmn:incoming>SequenceFlow_00uqfc1</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0a9k4gg" camunda:class="wfm.group3.localy.delegates.SendCancellationDelegate" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0a9k4gg" messageRef="Message_0kmnzvr" camunda:class="wfm.group3.localy.delegates.SendCancellationDelegate" />
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_00uqfc1" name="yes" sourceRef="ExclusiveGateway_11e0ioe" targetRef="EndEvent_0oh38lr">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${groupFull}</bpmn:conditionExpression>
