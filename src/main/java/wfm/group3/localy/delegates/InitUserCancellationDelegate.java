@@ -12,8 +12,10 @@ public class InitUserCancellationDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         LOGGER.info("Sending Message 'UserCancellation'");
+        String resId = delegateExecution.getVariable("reservationId").toString();
         delegateExecution.getProcessEngineServices().getRuntimeService()
                 .createMessageCorrelation("UserCancellation")
+                .setVariable("reservationId", resId)
                 .correlate();
     }
 }

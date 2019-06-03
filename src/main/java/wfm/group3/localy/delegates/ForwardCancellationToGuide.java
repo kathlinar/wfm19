@@ -11,7 +11,7 @@ public class ForwardCancellationToGuide implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
-        LOGGER.info("Sending Message 'ReveiveNewCancellation'");
+        LOGGER.info("Sending Message 'ReceiveNewCancellation'");
 
         String reservationId = delegateExecution.getVariable("reservationId").toString();
 

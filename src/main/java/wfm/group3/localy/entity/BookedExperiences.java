@@ -9,6 +9,7 @@ import java.time.LocalTime;
 
 public class BookedExperiences {
 
+    private Long id;
 
     private Long experienceId;
 
@@ -33,6 +34,7 @@ public class BookedExperiences {
     private Enums.ReservationStatus status;
 
     public BookedExperiences(Experience experience, Reservation reservation) {
+        this.id = reservation.getReservationId();
         this.experienceId = experience.getId();
         this.name = experience.getName();
         this.description = experience.getDescription();
@@ -47,6 +49,13 @@ public class BookedExperiences {
         this.status = reservation.getStatus();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;

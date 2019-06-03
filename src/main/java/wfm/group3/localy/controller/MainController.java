@@ -173,13 +173,13 @@ public class MainController {
 
 
         String processInstanceId= this.reservationRepository
-                .findByReservationDate(LocalDate.parse(payload.get("date").toString().replace("T", " "), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .findByReservationDate(LocalDate.parse(payload.get("date").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .get(0)
                 .getProcessInstanceId();
 
         // this.runtimeService.setVariable(processDefId,"canceled",true);
-
-        this.runtimeService.createMessageCorrelation("InitUserCancellation").correlate();
+        System.out.println(payload.get("reservationId"));
+        this.runtimeService.createMessageCorrelation("InitUserCancellation").setVariable("reservationId", payload.get("reservationId").toString()).correlate();
 
         for (ProcessInstance processInstance : this.customerInstances.get(payload.get("email").toString())) {
             if (processInstance.getId().equals(processInstanceId)) {

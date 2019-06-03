@@ -10,6 +10,7 @@ import wfm.group3.localy.entity.Reservation;
 import wfm.group3.localy.utils.Enums;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,12 +39,20 @@ public class ReservationRepositoryTest {
         res2.setFeedback("Test feedback");
         res2.setReservationDate(LocalDate.now());
 
-        reservationRepository.save(res1);
-        reservationRepository.save(res2);
+        //reservationRepository.save(res1);
+        //reservationRepository.save(res2);
     }
 
     @Test
     public void testFindReservationsByPersonId() {
         assertEquals(reservationRepository.findReservationsByPersonId(1L).size(), 2);
+    }
+
+    @Test
+    public void testGetGroupSizeOfReservation() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String dateStr = "2019-06-10";
+        LocalDate date = LocalDate.parse(dateStr, formatter);
+        System.out.println(reservationRepository.getGroupSizeOfReservation(10L, date));
     }
 }

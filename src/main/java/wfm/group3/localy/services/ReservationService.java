@@ -1,5 +1,6 @@
 package wfm.group3.localy.services;
 
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import wfm.group3.localy.entity.Experience;
@@ -29,8 +30,8 @@ public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    public List<Experience> retrieveExperiences() {
-        return experienceRepository.findAll();
+    public List<Experience> retrieveExperiences(LocalDate date) {
+        return experienceRepository.findExperiencesByNoReservationYet(date);
     }
 
     public long makeReservation(Long experienceId, String email, LocalDate date, String processInstanceId) {
@@ -41,7 +42,8 @@ public class ReservationService {
         Long id = null;
         Optional<Experience> experience = this.experienceRepository.findById(experienceId);
         Person person = this.personRepository.findByEmail(email);
-
+        LOGGER.info(experience.toString());
+        LOGGER.info(person.toString());
         if (experience.isPresent() && person != null) {
             id = this.makeReservation(experience.get(), person, date, processInstanceId, status);
         }
@@ -49,6 +51,11 @@ public class ReservationService {
     }
 
     private Long makeReservation(Experience experience, Person person, LocalDate date, String processInstanceId, Enums.ReservationStatus status) {
+        LOGGER.info(experience.toString());
+        LOGGER.info(person.toString());
+        LOGGER.info(date.toString());
+        LOGGER.info(processInstanceId);
+        LOGGER.info(status.name());
         Reservation reservation = new Reservation();
         reservation.setPersonId(person.getId());
         reservation.setExperienceId(experience.getId());

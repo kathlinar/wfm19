@@ -64,6 +64,10 @@
             modalShow: false,
             email: '',
             fields: {
+                id:{
+                    label: 'ID',
+                    sortable: false
+                },
                 name:{
                     label: 'Name',
                     sortable: true
@@ -125,21 +129,22 @@
             },
             cancel(item) {
                 let _this = this;
-                if(item.status == "CONFIRMED") {
+                if(item.status === "CONFIRMED") {
                     axios.post('/cancelReservation', {
+                        reservationId: item.id,
                         date: item.reservationDate,
                         email: this.email,
                     }).then(function (response) {
-                        _this.cancelTxt = 'The cancellation of ' + item.name + ' was successfully';
+                        _this.cancelTxt = 'The cancellation of ' + item.name + ' was successful';
                         _this.modalShow = true;
                     })
                         .catch(function (error) {
-                            _this.cancelTxt = 'Their was an error on the cancellation of ' + item.name;
+                            _this.cancelTxt = 'There was an error on the cancellation of ' + item.name;
                             _this.modalShow = true;
                         });
                 }else{
 
-                    _this.cancelTxt = 'The cancellation only possible if status is confirmed';
+                    _this.cancelTxt = 'The cancellation is only possible if status is confirmed';
                     _this.modalShow = true;
                 }
             },
