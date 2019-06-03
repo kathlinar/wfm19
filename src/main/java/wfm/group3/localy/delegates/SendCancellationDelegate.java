@@ -35,12 +35,12 @@ public class SendCancellationDelegate implements JavaDelegate {
         String email = delegateExecution.getVariable("email").toString();
         Long experienceId = Long.parseLong(delegateExecution.getVariable("experienceId").toString());
         LocalDate date = LocalDate.parse(delegateExecution.getVariable("date").toString(), formatter);
+        String processInstanceId = delegateExecution.getVariable("processInstanceId").toString();
 
         Optional<Experience> experienceOptional = this.experienceRepository.findById(experienceId);
         if (experienceOptional.isPresent()) {
             Boolean overlap = Boolean.valueOf(delegateExecution.getVariable("overlap").toString());
             Boolean groupFull = Boolean.valueOf(delegateExecution.getVariable("groupFull").toString());
-            String processInstanceId = delegateExecution.getVariable("processInstanceId").toString();
 
             String startTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(experienceOptional.get().getStartTime());
             String detail = experienceOptional.get().getName() + " (" + experienceOptional.get().getLocation().getInfoString() + "), on "
@@ -69,6 +69,7 @@ public class SendCancellationDelegate implements JavaDelegate {
         }
         delegateExecution.getProcessEngineServices().getRuntimeService()
                 .createMessageCorrelation("NegativeResponse")
+                .processInstanceId(processInstanceId)
                 .correlate();
     }
 }
