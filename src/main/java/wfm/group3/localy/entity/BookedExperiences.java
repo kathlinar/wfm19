@@ -22,11 +22,15 @@ public class BookedExperiences {
 
     private String address;
 
+    private String durationString;
+
     private Duration duration;
 
     private LocalTime startTime;
 
     private LocalDate reservationDate;
+
+    private Enums.ReservationStatus status;
 
     public BookedExperiences(Experience experience, Reservation reservation) {
         this.experienceId = experience.getId();
@@ -36,11 +40,25 @@ public class BookedExperiences {
         this.price = experience.getPrice();
         this.address = experience.getLocation().getCity() + ", " + experience.getLocation().getStreet();
         this.duration = experience.getDuration();
+        this.durationString = String.format("%02d", experience.getDuration().toHoursPart()) + ":" + String.format("%02d", experience.getDuration().toMinutesPart());
         this.startTime = experience.getStartTime();
 
         this.reservationDate = reservation.getReservationDate();
+        this.status = reservation.getStatus();
     }
 
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public Enums.ReservationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(Enums.ReservationStatus status) {
+        this.status = status;
+    }
 
     public Long getExperienceId() {
         return experienceId;
@@ -88,6 +106,14 @@ public class BookedExperiences {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getDurationString() {
+        return durationString;
+    }
+
+    public void setDurationString(String durationString) {
+        this.durationString = durationString;
     }
 
     public Duration getDuration() {

@@ -171,12 +171,15 @@ public class MainController {
     @RequestMapping(value = "/cancelReservation", method = RequestMethod.POST)
     public ResponseEntity cancelReservation(@RequestBody Map<String, Object> payload) {
 
-        this.runtimeService.createMessageCorrelation("InitUserCancellation").correlate();
 
         String processDefId = this.reservationRepository
                 .findByReservationDate(LocalDate.parse(payload.get("date").toString().replace("T", " "), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .get(0)
                 .getProcessDefinitionId();
+
+        //this.runtimeService.setVariable(processDefId,"canceled",true);
+
+        this.runtimeService.createMessageCorrelation("InitUserCancellation").correlate();
 
         for (ProcessInstance processInstance : this.customerInstances.get(payload.get("email").toString())) {
             if (processInstance.getProcessDefinitionId().equals(processDefId)) {

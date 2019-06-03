@@ -76,9 +76,13 @@
                     label: 'Reservation Date',
                     sortable: true
                 },
-                duration: {
+                durationString: {
                     label: 'Duration',
                     sortable: false
+                },
+                startTime: {
+                    label: 'Start',
+                    sortable: true
                 },
                 price:{
                     label: 'Price (€)',
@@ -87,6 +91,10 @@
                 type:{
                     label: 'Type',
                     sortable: true
+                },
+                status:{
+                    label: 'Status',
+                    sortable: false
                 },
                 address: {
                     label: 'Address',
@@ -117,17 +125,23 @@
             },
             cancel(item) {
                 let _this = this;
-                axios.post('/cancelReservation', {
-                    date: item.reservationDate,
-                    email: this.email,
-                }).then(function (response) {
-                    _this.cancelTxt = 'The cancellation of '+item.name+' was successfully';
+                if(item.status == "CONFIRMED") {
+                    axios.post('/cancelReservation', {
+                        date: item.reservationDate,
+                        email: this.email,
+                    }).then(function (response) {
+                        _this.cancelTxt = 'The cancellation of ' + item.name + ' was successfully';
+                        _this.modalShow = true;
+                    })
+                        .catch(function (error) {
+                            _this.cancelTxt = 'Their was an error on the cancellation of ' + item.name;
+                            _this.modalShow = true;
+                        });
+                }else{
+
+                    _this.cancelTxt = 'The cancellation only possible if status is confirmed';
                     _this.modalShow = true;
-                })
-                .catch(function (error) {
-                    _this.cancelTxt = 'Their was an error on the cancellation of '+item.name;
-                    _this.modalShow = true;
-                });
+                }
             },
             attend(item){
                 //TODO

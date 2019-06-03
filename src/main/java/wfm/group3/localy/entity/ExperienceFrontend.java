@@ -42,6 +42,14 @@ public class ExperienceFrontend implements Serializable {
             this.startTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(experience.getStartTime());
     }
 
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
     public Long getId() {
         return id;
     }
