@@ -25,12 +25,13 @@ public class MakeReservationDelegate implements JavaDelegate {
         LOGGER.info("Save Reservation to DB");
 
         String email = delegateExecution.getVariable("email").toString();
-        String processDefinitionId = delegateExecution.getVariable("processDefinitionId").toString();
+        String processInstanceId = delegateExecution.getVariable("processInstanceId").toString();
         Long experienceId = Long.parseLong(delegateExecution.getVariable("experienceId").toString());
         LocalDate date = LocalDate.parse(delegateExecution.getVariable("date").toString(), formatter);
 
-        Long reservationId = this.reservationService.makeReservation(experienceId, email, date, processDefinitionId);
+        Long reservationId = this.reservationService.makeReservation(experienceId, email, date, processInstanceId);
 
         delegateExecution.setVariable("reservationId", reservationId);
+        delegateExecution.setVariable("processInstanceId",processInstanceId);
     }
 }

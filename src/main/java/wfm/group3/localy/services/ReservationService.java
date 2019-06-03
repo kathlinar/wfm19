@@ -35,23 +35,23 @@ public class ReservationService {
     }
 
 
-    public long makeReservation(Long experienceId, String email, LocalDate date, String processDefinitionId) {
+    public long makeReservation(Long experienceId, String email, LocalDate date, String processInstanceId) {
         Long id = null;
         Optional<Experience> experience = this.experienceRepository.findById(experienceId);
         Person person = this.personRepository.findByEmail(email);
 
         if (experience.isPresent() && person != null) {
-            id = this.makeReservation(experience.get(), person, date, processDefinitionId);
+            id = this.makeReservation(experience.get(), person, date, processInstanceId);
         }
         return id;
     }
 
-    private Long makeReservation(Experience experience, Person person, LocalDate date, String processDefinitionId) {
+    private Long makeReservation(Experience experience, Person person, LocalDate date, String processInstanceId) {
         Reservation reservation = new Reservation();
         reservation.setPersonId(person.getId());
         reservation.setExperienceId(experience.getId());
         reservation.setReservationDate(date);
-        reservation.setProcessDefinitionId(processDefinitionId);
+        reservation.setProcessInstanceId(processInstanceId);
         reservation.setStatus(Enums.ReservationStatus.PENDING);
 
         reservation = this.reservationRepository.saveAndFlush(reservation);

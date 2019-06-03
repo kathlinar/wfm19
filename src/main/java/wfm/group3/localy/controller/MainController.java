@@ -120,7 +120,7 @@ public class MainController {
                         .execute());
             }
             List<Task> tasks = this.taskService.createTaskQuery()
-                    .processDefinitionId(this.customerInstances.get(person.getEmail()).get(this.customerInstances.get(person.getEmail()).size() - 1).getProcessDefinitionId()).list();
+                    .processInstanceId(this.customerInstances.get(person.getEmail()).get(this.customerInstances.get(person.getEmail()).size() - 1).getId()).list();
 
             if (tasks.get(0).getName().equals("Log in with mail"))
                 this.taskService.complete(tasks.get(0).getId());
@@ -133,7 +133,7 @@ public class MainController {
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public ResponseEntity logout(@RequestBody Map<String, Object> payload) {
         int posNewestInstance = this.customerInstances.get(payload.get("email").toString()).size() - 1;
-        this.runtimeService.deleteProcessInstance(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getProcessInstanceId(), "");
+        this.runtimeService.deleteProcessInstance(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance).getId(), "");
         this.customerInstances.get(payload.get("email").toString()).remove(this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance));
 
         return new ResponseEntity(HttpStatus.OK);
@@ -144,7 +144,7 @@ public class MainController {
         int posNewestInstance = this.customerInstances.get(payload.get("email").toString()).size() - 1;
         ProcessInstance processInstance = this.customerInstances.get(payload.get("email").toString()).get(posNewestInstance);
 
-        List<Task> tasks = this.taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list();
+        List<Task> tasks = this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
 
         String text = payload.get("date").toString().substring(0, payload.get("date").toString().indexOf("."));
         LocalDateTime localDate = LocalDateTime.parse(text);
@@ -158,7 +158,7 @@ public class MainController {
             this.runtimeService.setVariable(processInstance.getId(), "searchCancelled", true);
             this.taskService.complete(tasks.get(0).getId());
 
-            tasks = this.taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list();
+            tasks = this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
             this.runtimeService.setVariable(processInstance.getId(), "date", formatter.format(localDate));
 
             if (tasks.get(0).getName().equals("Select Date"))
@@ -172,17 +172,17 @@ public class MainController {
     public ResponseEntity cancelReservation(@RequestBody Map<String, Object> payload) {
 
 
-        String processDefId = this.reservationRepository
+        String processInstanceId= this.reservationRepository
                 .findByReservationDate(LocalDate.parse(payload.get("date").toString().replace("T", " "), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .get(0)
-                .getProcessDefinitionId();
+                .getProcessInstanceId();
 
-        //this.runtimeService.setVariable(processDefId,"canceled",true);
+        // this.runtimeService.setVariable(processDefId,"canceled",true);
 
         this.runtimeService.createMessageCorrelation("InitUserCancellation").correlate();
 
         for (ProcessInstance processInstance : this.customerInstances.get(payload.get("email").toString())) {
-            if (processInstance.getProcessDefinitionId().equals(processDefId)) {
+            if (processInstance.getId().equals(processInstanceId)) {
                 this.customerInstances.get(payload.get("email").toString()).remove(processInstance);
             }
         }
@@ -194,10 +194,10 @@ public class MainController {
     @RequestMapping(value = "/attendExperience", method = RequestMethod.POST)
     public ResponseEntity attendExperience(@RequestBody Map<String, Object> payload) {
 
-        String processDefId = this.reservationRepository
+        String processInstanceId = this.reservationRepository
                 .findByReservationDate(LocalDate.parse(payload.get("date").toString().replace("T", " "), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .get(0)
-                .getProcessDefinitionId();
+                .getProcessInstanceId();
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -208,12 +208,12 @@ public class MainController {
         int posNewestInstance = this.customerInstances.get(email).size() - 1;
         ProcessInstance processInstance = this.customerInstances.get(email).get(posNewestInstance);
 
-        List<Task> tasks = taskService.createTaskQuery().processDefinitionId(processInstance.getProcessDefinitionId()).list();
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
 
         this.runtimeService.setVariable(processInstance.getId(), "searchCancelled", false);
         this.runtimeService.setVariable(processInstance.getId(), "email", email);
         this.runtimeService.setVariable(processInstance.getId(), "date", formatter.format(this.lastSelectedDate.get(email)));
-        this.runtimeService.setVariable(processInstance.getId(), "processDefinitionId", processInstance.getProcessDefinitionId());
+        this.runtimeService.setVariable(processInstance.getId(), "processInstanceId", processInstance.getId());
         this.runtimeService.setVariable(processInstance.getId(), "experienceToReserve", payload.get("id").toString());
 
         if (tasks.get(0).getName().equals("Choose desired experiences"))

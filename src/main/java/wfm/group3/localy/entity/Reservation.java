@@ -30,7 +30,7 @@ public class Reservation implements Serializable {
     private String feedback;
 
     @Column
-    private String processDefinitionId;
+    private String processInstanceId;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -40,12 +40,12 @@ public class Reservation implements Serializable {
         this.reservationId = reservationId;
     }
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
+    public String getProcessInstanceId() {
+        return processInstanceId;
     }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     public Long getPersonId() {

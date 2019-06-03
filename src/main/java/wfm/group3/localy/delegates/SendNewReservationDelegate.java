@@ -32,7 +32,7 @@ public class SendNewReservationDelegate implements JavaDelegate {
                 .setVariable("email", email)
                 .setVariable("experienceId", experienceId)
                 .setVariable("date", date)
-                .setVariable("processDefinitionId",  delegateExecution.getVariable("processDefinitionId").toString())
+                .setVariable("processInstanceId",  delegateExecution.getVariable("processInstanceId").toString())
                 .correlate();
     }
 }
