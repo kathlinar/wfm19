@@ -8,6 +8,7 @@ import wfm.group3.localy.entity.Experience;
 import wfm.group3.localy.entity.Reservation;
 import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.ReservationRepository;
+import wfm.group3.localy.utils.Enums;
 import wfm.group3.localy.utils.JavaMailUtil;
 
 import java.time.format.DateTimeFormatter;
@@ -45,7 +46,7 @@ public class SendConfirmationDelegate implements JavaDelegate {
                         + reservationOptional.get().getReservationDate().format(formatter) + " starting at " + startTime;
 
                 try {
-                    JavaMailUtil.sendMail(email, detail, "User Confirmation");
+                    JavaMailUtil.sendMail(email, detail, Enums.MailPurpose.USER_CONFIRMATION);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

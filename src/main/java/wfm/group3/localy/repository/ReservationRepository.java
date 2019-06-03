@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import wfm.group3.localy.entity.Reservation;
+import wfm.group3.localy.utils.Enums;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,7 +21,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByReservationDate(LocalDate reservationDate);
 
-    Reservation findFirstByExperienceIdAndReservationDate(Long experienceId, LocalDate date);
+    Reservation findFirstByExperienceIdAndReservationDateAndStatus(Long experienceId, LocalDate date, Enums.ReservationStatus status);
 
     @Query("SELECT count(res.experienceId) FROM Reservation res WHERE res.experienceId=(:eID) AND res.reservationDate=(:date) AND res.status='CONFIRMED' group by res.reservationDate,res.experienceId")
     Long getGroupSizeOfReservation(@Param("eID") Long experienceId, @Param("date") LocalDate date);

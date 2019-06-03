@@ -29,30 +29,32 @@ public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-
     public List<Experience> retrieveExperiences() {
         return experienceRepository.findAll();
     }
 
-
     public long makeReservation(Long experienceId, String email, LocalDate date, String processInstanceId) {
+        return makeReservation(experienceId, email, date, processInstanceId, Enums.ReservationStatus.PENDING);
+    }
+
+    public long makeReservation(Long experienceId, String email, LocalDate date, String processInstanceId, Enums.ReservationStatus status) {
         Long id = null;
         Optional<Experience> experience = this.experienceRepository.findById(experienceId);
         Person person = this.personRepository.findByEmail(email);
 
         if (experience.isPresent() && person != null) {
-            id = this.makeReservation(experience.get(), person, date, processInstanceId);
+            id = this.makeReservation(experience.get(), person, date, processInstanceId, status);
         }
         return id;
     }
 
-    private Long makeReservation(Experience experience, Person person, LocalDate date, String processInstanceId) {
+    private Long makeReservation(Experience experience, Person person, LocalDate date, String processInstanceId, Enums.ReservationStatus status) {
         Reservation reservation = new Reservation();
         reservation.setPersonId(person.getId());
         reservation.setExperienceId(experience.getId());
         reservation.setReservationDate(date);
         reservation.setProcessInstanceId(processInstanceId);
-        reservation.setStatus(Enums.ReservationStatus.PENDING);
+        reservation.setStatus(status);
 
         reservation = this.reservationRepository.saveAndFlush(reservation);
         return reservation.getReservationId();
@@ -61,7 +63,7 @@ public class ReservationService {
     public boolean isGroupFull(long experienceId, LocalDate date) {
         boolean full = false;
 
-        Reservation reservation = this.reservationRepository.findFirstByExperienceIdAndReservationDate(experienceId, date);
+        Reservation reservation = this.reservationRepository.findFirstByExperienceIdAndReservationDateAndStatus(experienceId, date, Enums.ReservationStatus.CONFIRMED);
 
         if (reservation != null) {
             Optional<Experience> experienceOptional = this.experienceRepository.findById(experienceId);
