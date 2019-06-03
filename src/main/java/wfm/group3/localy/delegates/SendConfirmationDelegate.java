@@ -35,6 +35,7 @@ public class SendConfirmationDelegate implements JavaDelegate {
 
         String email = delegateExecution.getVariable("email").toString();
         Long reservationId = Long.parseLong(delegateExecution.getVariable("reservationId").toString());
+        String instanceId = delegateExecution.getVariable("processInstanceId").toString();
 
         Optional<Reservation> reservationOptional = this.reservationRepository.findById(reservationId);
 
@@ -51,9 +52,15 @@ public class SendConfirmationDelegate implements JavaDelegate {
                     e.printStackTrace();
                 }
             }
+
+
+            delegateExecution.getProcessEngineServices().getRuntimeService()
+                    .createMessageCorrelation("PositiveResponse")
+                    .processInstanceId(instanceId)
+                    .correlate();
         }
-        delegateExecution.getProcessEngineServices().getRuntimeService()
-                .createMessageCorrelation("PositiveResponse")
-                .correlate();
+
+
+
     }
 }

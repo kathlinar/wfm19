@@ -25,6 +25,7 @@ public class GuideSendConfirmationDelegate implements JavaDelegate {
 
         String email = delegateExecution.getVariable("email").toString();
         Long reservationId = Long.valueOf(delegateExecution.getVariable("reservationId").toString());
+        String instanceId = delegateExecution.getVariable("processInstanceId").toString();
 
         Optional<Reservation> reservationOptional = this.reservationRepository.findById(reservationId);
 
@@ -38,6 +39,7 @@ public class GuideSendConfirmationDelegate implements JavaDelegate {
                 .createMessageCorrelation("ReservationConfirmation")
                 .setVariable("reservationId", reservationId)
                 .setVariable("email", email)
-                .correlate();
+                .setVariable("processInstanceId",instanceId)
+                .correlateAll();
     }
 }
