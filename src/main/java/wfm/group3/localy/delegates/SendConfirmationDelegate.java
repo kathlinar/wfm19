@@ -8,7 +8,6 @@ import wfm.group3.localy.entity.Experience;
 import wfm.group3.localy.entity.Reservation;
 import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.ReservationRepository;
-import wfm.group3.localy.utils.Enums;
 import wfm.group3.localy.utils.JavaMailUtil;
 
 import java.time.format.DateTimeFormatter;
@@ -38,7 +37,6 @@ public class SendConfirmationDelegate implements JavaDelegate {
         Optional<Reservation> reservationOptional = this.reservationRepository.findById(reservationId);
 
         if (reservationOptional.isPresent()) {
-            reservationOptional.get().setStatus(Enums.ReservationStatus.CONFIRMED);
             Optional<Experience> experienceOptional = this.experienceRepository.findById(reservationOptional.get().getExperienceId());
             if (experienceOptional.isPresent()) {
                 String detail = experienceOptional.get().getName() + ", on " + reservationOptional.get().getReservationDate().format(formatter);
