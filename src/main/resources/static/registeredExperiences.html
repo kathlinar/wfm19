@@ -17,7 +17,7 @@
 </head>
 <body>
 <div id="app">
-    <div>
+    <div v-show="authorized">
         <b-navbar toggleable="lg" type="dark" variant="info">
             <b-navbar-brand href="#">locally</b-navbar-brand>
 
@@ -38,7 +38,7 @@
         </b-navbar>
     </div>
     <b-table id="table" style="padding-top: 3%; padding-left: 15%; padding-right: 15%" bordered outlined striped responsive
-                 :fields="fields" :items="items" class="text-center">
+                 :fields="fields" :items="items" class="text-center" v-show="authorized">
         <template slot="cancel" scope="item">
             <b-btn class="text-center" size="sm" @click="cancel(item.item)">Cancel</b-btn>
         </template>
@@ -53,6 +53,9 @@
         </div>
     </b-modal>
 
+
+    <h1 v-show="!authorized">You are not permitted to access this page, whether due to wrong email address or you are not logged in yet</h1>
+
 </div>
 </body>
 <script>
@@ -63,6 +66,7 @@
             cancelTxt: '',
             modalShow: false,
             email: '',
+            authorized: true,
             fields: {
                 id:{
                     label: 'ID',
@@ -115,11 +119,17 @@
             items: [],
         },
         created() {
+            let that = this;
             this.baseUrl = window.location.origin + "/";
             var url = new URL(window.location.href);
             this.email = url.searchParams.get("email");
             axios.get(this.baseUrl + "getBookedExperiences/"+this.email).then(response => {
                 this.items = response.data;
+            });
+            axios.get(this.baseUrl + "checkLoginState/"+this.email).then(response => {
+                that.authorized = true;
+            }).catch(function (error) {
+                that.authorized = false;
             });
 
         },

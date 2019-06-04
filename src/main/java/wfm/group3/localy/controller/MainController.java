@@ -24,13 +24,12 @@ import wfm.group3.localy.services.PersonService;
 import wfm.group3.localy.services.ReservationService;
 import wfm.group3.localy.utils.Enums;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Controller
 public class MainController {
@@ -195,9 +194,16 @@ public class MainController {
     @RequestMapping(value = "/checkLoginState/{email}" ,method = RequestMethod.GET)
     public ResponseEntity checkLogin(@PathVariable("email") String email){
         if(!email.isEmpty()) {
-            List<ProcessInstance> list = this.runtimeService.createProcessInstanceQuery().processDefinitionKey("Customer").variableValueEquals("email", email).active().list();
-            if (list.size() > 0)
-                return new ResponseEntity(HttpStatus.OK);
+           if (this.customerInstances.containsKey(email) && this.customerInstances.get(email).size() > 0){
+                List<Task> tasks = this.taskService.createTaskQuery().processInstanceId(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1).getId()).list();
+
+                if(tasks.size() == 1){
+                    if(! tasks.get(0).getCreateTime().before(Date.from(Instant.now().minus(1, ChronoUnit.HOURS)))){
+                        return new ResponseEntity(HttpStatus.OK);
+                    }
+                }
+            }
+
         }
         return new ResponseEntity(HttpStatus.FORBIDDEN);
     }
