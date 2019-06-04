@@ -200,6 +200,9 @@ public class MainController {
                 if(tasks.size() == 1){
                     if(! tasks.get(0).getCreateTime().before(Date.from(Instant.now().minus(1, ChronoUnit.HOURS)))){
                         return new ResponseEntity(HttpStatus.OK);
+                    }else{
+                        this.runtimeService.deleteProcessInstance(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1).getId(),"");
+                        this.customerInstances.get(email).remove(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1));
                     }
                 }
             }
