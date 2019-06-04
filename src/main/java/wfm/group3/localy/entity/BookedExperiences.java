@@ -31,6 +31,8 @@ public class BookedExperiences {
 
     private LocalDate reservationDate;
 
+    private boolean attended;
+
     private Enums.ReservationStatus status;
 
     public BookedExperiences(Experience experience, Reservation reservation) {
@@ -44,7 +46,7 @@ public class BookedExperiences {
         this.duration = experience.getDuration();
         this.durationString = String.format("%02d", experience.getDuration().toHoursPart()) + ":" + String.format("%02d", experience.getDuration().toMinutesPart());
         this.startTime = experience.getStartTime();
-
+        this.attended = reservation.getAttended();
         this.reservationDate = reservation.getReservationDate();
         this.status = reservation.getStatus();
     }
@@ -144,4 +146,14 @@ public class BookedExperiences {
     public void setReservationDate(LocalDate reservationDate) {
         this.reservationDate = reservationDate;
     }
+
+    public boolean isAttended() {
+        return attended;
+    }
+
+    public void setAttended(boolean attended) {
+        this.attended = attended;
+    }
+
+
 }

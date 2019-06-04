@@ -68,7 +68,7 @@
       <bpmn:outgoing>SequenceFlow_06m4hdj</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_0kmnzvr" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1jrudf7" name="RecievePositiveResponse">
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1jrudf7" name="ReceivePositiveResponse">
       <bpmn:incoming>SequenceFlow_10uko3o</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0w6iw9m</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_0j008vd" />

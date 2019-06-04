@@ -73,7 +73,9 @@ public class Reservation implements Serializable {
     }
 
     public Boolean getAttended() {
-        return attended;
+        if(attended == null) {
+            return false;
+        } else return  attended;
     }
 
     public void setAttended(Boolean attended) {

@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import wfm.group3.localy.entity.BookedExperiences;
-import wfm.group3.localy.entity.Experience;
-import wfm.group3.localy.entity.ExperienceFrontend;
-import wfm.group3.localy.entity.Person;
+import wfm.group3.localy.entity.*;
 import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.PersonRepository;
 import wfm.group3.localy.repository.ReservationRepository;
@@ -214,11 +211,49 @@ public class MainController {
     @RequestMapping(value = "/attendExperience", method = RequestMethod.POST)
     public ResponseEntity attendExperience(@RequestBody Map<String, Object> payload) {
 
-        String processInstanceId = this.reservationRepository
-                .findByReservationDate(LocalDate.parse(payload.get("date").toString().replace("T", " "), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+        /*String processInstanceId = this.reservationRepository
+                .findByReservationDate(LocalDate.parse(payload.get("date").toString().replace("T", " "), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .get(0)
-                .getProcessInstanceId();
+                .getProcessInstanceId();*/
+        String email = payload.get("email").toString();
+        String processInstanceId = processIdHelper(email);
 
+        this.reservationRepository.updateAttended(Long.parseLong(payload.get("reservationId").toString()),true);
+
+
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+        if (tasks.get(0).getName().equals("Attend Event/Experience"))
+            this.taskService.complete(tasks.get(0).getId());
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    /*@RequestMapping(value = "/checkAttended", method = RequestMethod.POST)
+    public ResponseEntity <List<Boolean>> checkAttended(@RequestBody Map<String, Object> payload) {
+        String email = payload.get("email").toString();
+        Person pers = this.personRepository.findByEmail(email);
+        List <Reservation> list = reservationRepository.findReservationsByPersonId(Long.parseLong(pers.getId().toString()));
+        List<Boolean> result = new ArrayList<>();
+        for (Reservation res: list) {
+            result.add(res.getAttended());
+        }
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }*/
+
+    @RequestMapping(value = "/sendFeedback", method = RequestMethod.POST)
+    public ResponseEntity sendFeedback(@RequestBody Map<String, Object> payload) {
+        String email = payload.get("email").toString();
+        String processInstanceId = processIdHelper(email);
+        this.reservationRepository.setFeedback(Long.parseLong(payload.get("reservationId").toString()),payload.get("feedback").toString());
+
+        Person pers = this.personRepository.findByEmail(email);
+        List <Reservation> list = reservationRepository.findReservationsByPersonId(Long.parseLong(pers.getId().toString()));
+        for (Reservation res: list) {
+            System.out.println(res.getReservationId() +": " +res.getFeedback());
+        }
+
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+        if (tasks.get(0).getName().equals("Feedback about experience"))
+            this.taskService.complete(tasks.get(0).getId());
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -266,6 +301,11 @@ public class MainController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    private String processIdHelper(String email){
+        int posNewestInstance = this.customerInstances.get(email).size() - 1;
+        return this.customerInstances.get(email).get(posNewestInstance).getId();
     }
 
     /*private void createCamundaUser(Person p) {
