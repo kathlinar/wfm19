@@ -40,17 +40,29 @@
     <b-table id="table" style="padding-top: 3%; padding-left: 15%; padding-right: 15%" bordered outlined striped responsive
                  :fields="fields" :items="items" class="text-center" v-show="authorized">
         <template slot="cancel" scope="item">
-            <b-btn class="text-center" size="sm" @click="cancel(item.item)">Cancel</b-btn>
+            <b-btn class="text-center" size="sm" @click="cancel(item.item)" :disabled="!cancelDisabled(item.item)">Cancel</b-btn>
         </template>
-        <template slot="attend" scope="item">
-            <b-btn class="text-center" size="sm" @click="attend(item.item)">Attend</b-btn>
+        <template slot="attended" scope="item">
+            <b-btn class="text-center" size="sm" @click="attended(item.item)">Attend</b-btn>
+        </template>
+        <template slot="feedback" scope="item">
+            <b-btn class="text-center" size="sm" @click="saveRID(item.item)" :disabled="!isDisabled(item.item)" v-b-modal.modal-1>Feedback</b-btn>
         </template>
     </b-table>
 
-    <b-modal id="cancellation" v-model="modalShow" title="Reservation" hide-footer>
+    <b-modal id="reservation" v-model="modalShow" title="Reservation" hide-footer>
         <div class="d-block text-center">
-            <h4>{{cancelTxt}}</h4>
+            <h4>{{reservationTxt}}</h4>
         </div>
+    </b-modal>
+    <b-modal id="modal-1" v-model="modalShow2" title="Feedback" @ok="feedback()">
+        <b-form-textarea
+                id="textarea-auto-height"
+                v-model="text"
+                placeholder="Please write your feedback here if you attended the experience."
+                rows="3"
+                max-rows="8"
+        ></b-form-textarea>
     </b-modal>
 
 
@@ -63,10 +75,13 @@
         el: '#app',
         data: {
             datetime: '',
-            cancelTxt: '',
+            reservationTxt: '',
             modalShow: false,
+            modalShow2: false,
             email: '',
             authorized: true,
+            text: '',
+            rID: '',
             fields: {
                 name:{
                     label: 'Name',
@@ -107,8 +122,11 @@
                 cancel:{
                     label: 'cancel',
                 },
-                attend: {
-                    label: 'attend'
+                attended: {
+                    label: 'attended',
+                },
+                feedback: {
+                    label: 'feedback'
                 }
 
             },
@@ -119,7 +137,8 @@
             this.baseUrl = window.location.origin + "/";
             var url = new URL(window.location.href);
             this.email = url.searchParams.get("email");
-            axios.get(this.baseUrl + "getBookedExperiences/"+this.email).then(response => {
+            axios.get(this.baseUrl + "getBookedExperiences/" + this.email).then(response => {
+                console.log(response.data);
                 this.items = response.data;
             });
             axios.get(this.baseUrl + "checkLoginState/"+this.email).then(response => {
@@ -141,22 +160,61 @@
                         date: item.reservationDate,
                         email: this.email,
                     }).then(function (response) {
-                        _this.cancelTxt = 'The cancellation of ' + item.name + ' was successful';
+                        _this.reservationTxt = 'The cancellation of ' + item.name + ' was successful';
                         _this.modalShow = true;
                     })
                         .catch(function (error) {
-                            _this.cancelTxt = 'There was an error on the cancellation of ' + item.name;
+                            _this.reservationTxt = 'There was an error on the cancellation of ' + item.name;
                             _this.modalShow = true;
                         });
                 }else{
 
-                    _this.cancelTxt = 'The cancellation is only possible if status is confirmed';
+                    _this.reservationTxt = 'The cancellation is only possible if status is confirmed';
                     _this.modalShow = true;
                 }
             },
-            attend(item){
-                //TODO
-                console.log(item)
+            attended(item){
+
+                let _this = this;
+                if(item.status !== "CONFIRMED"){
+                    _this.reservationTxt = 'Experience is has to be confirmed in order to be attended';
+                    _this.modalShow = true;
+                } else if (item.attended === true) {
+                    _this.reservationTxt = item.name + ' already attended';
+                    _this.modalShow = true;
+                } else if (item.status === "CONFIRMED") {
+                    axios.post('/attendExperience', {
+                        reservationId: item.id,
+                        email: this.email,
+                    }).then(function (response) {
+                        _this.reservationTxt = 'The attendance of ' + item.name + ' was successful';
+                        _this.modalShow = true;
+                        item.attended = true;
+                    })
+                        .catch(function (error) {
+                            _this.reservationTxt = 'There was an error on the attendance of ' + item.name;
+                            _this.modalShow = true;
+                        });
+                }
+
+
+
+
+            },
+            feedback(){
+              let _this = this;
+                axios.post('/sendFeedback', {
+                    reservationId: this.rID,
+                    email: this.email,
+                    feedback: this.text,
+                }).then(function (response) {
+
+                })
+                    .catch(function (error) {
+                        _this.modalShow = true;
+                    });
+
+                this.text = '';
             },
             logout() {
                 axios.post('logout', {
@@ -167,9 +225,21 @@
                 }).catch(function (error) {
                     console.log(error);
                 });
+            },
+            saveRID(item) {
+                this.rID = item.id;
+            },
+
+            isDisabled(item){
+                return (new Date()>= new Date(item.reservationDate))&& (item.attended === true) && item.status === "CONFIRMED";
+            },
+
+            cancelDisabled(item) {
+                return (item.attended !== true);
             }
 
-        }
+        },
+
 
     });
 </script>
