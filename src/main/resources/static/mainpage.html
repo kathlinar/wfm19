@@ -24,6 +24,9 @@
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav>
+                <b-navbar-nav>
+                    <b-nav-item @click="goTo">My Experiences</b-nav-item>
+                </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
 
                     <b-nav-item-dropdown right>
@@ -42,9 +45,9 @@
             <b-btn class="text-center" size="sm" @click="reserve(item.item)">Reserve</b-btn>
         </template>
     </b-table>
-    <div class="text-center">
+    <!--<div class="text-center">
         <b-button :href="'registeredExperiences.html?email='+email">Booked Experiences</b-button>
-    </div>
+    </div>-->
 
     <b-modal id="reservation" v-model="modalShow" title="Reservation" hide-footer
              @hidden="start">
@@ -118,6 +121,9 @@
 
         },
         methods:{
+            goTo(){
+                window.location.href = "registeredExperiences.html?email="+this.email;
+            },
             start(){
                 let _this = this;
                 if(!this.resTxt.includes("Their was an error")){

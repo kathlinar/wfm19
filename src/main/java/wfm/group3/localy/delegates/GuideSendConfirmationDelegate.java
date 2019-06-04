@@ -2,12 +2,15 @@ package wfm.group3.localy.delegates;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import wfm.group3.localy.entity.Reservation;
 import wfm.group3.localy.repository.ReservationRepository;
 import wfm.group3.localy.utils.Enums;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -34,12 +37,26 @@ public class GuideSendConfirmationDelegate implements JavaDelegate {
             reservation.setStatus(Enums.ReservationStatus.CONFIRMED);
             this.reservationRepository.save(reservation);
         }
+        List<HistoricProcessInstance> instances = delegateExecution.getProcessEngineServices().getHistoryService().createHistoricProcessInstanceQuery()
+                .processDefinitionKey("WebApplication").active().orderByProcessInstanceStartTime().asc().list();
+
+
+        List<HistoricProcessInstance> instances1 = delegateExecution.getProcessEngineServices().getHistoryService().createHistoricProcessInstanceQuery()
+                .processDefinitionKey("LocalGuide").active().orderByProcessInstanceStartTime().asc().list();
+
+        int i;
+        for(i=0;i<instances1.size();i++){
+            if(delegateExecution.getProcessInstanceId().equals(instances1.get(i).getId())){
+                break;
+            }
+        }
 
         delegateExecution.getProcessEngineServices().getRuntimeService()
                 .createMessageCorrelation("ReservationConfirmation")
                 .setVariable("reservationId", reservationId)
                 .setVariable("email", email)
                 .setVariable("processInstanceId",instanceId)
-                .correlateAll();
+                .processInstanceId(instances.get(i).getId())
+                .correlate();
     }
 }

@@ -2,6 +2,7 @@ package wfm.group3.localy.controller;
 
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,7 @@ public class MainController {
                         .execute());
                 this.lastRecommendedExperiences.remove(payload.get("email").toString());
                 this.lastSelectedDate.remove(payload.get("email").toString());
+
                 return new ResponseEntity(HttpStatus.OK);
             }
         }
@@ -190,6 +192,15 @@ public class MainController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/checkLoginState/{email}" ,method = RequestMethod.GET)
+    public ResponseEntity checkLogin(@PathVariable("email") String email){
+        if(!email.isEmpty()) {
+            List<ProcessInstance> list = this.runtimeService.createProcessInstanceQuery().processDefinitionKey("Customer").variableValueEquals("email", email).active().list();
+            if (list.size() > 0)
+                return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
 
     @RequestMapping(value = "/attendExperience", method = RequestMethod.POST)
     public ResponseEntity attendExperience(@RequestBody Map<String, Object> payload) {
