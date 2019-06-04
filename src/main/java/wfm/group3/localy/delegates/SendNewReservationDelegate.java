@@ -51,12 +51,6 @@ public class SendNewReservationDelegate implements JavaDelegate {
         Set<Person> personSet = experience.getOfferedBy();
         String guideEmail = personSet.iterator().next().getEmail();
 
-        try {
-            JavaMailUtil.sendMail(guideEmail,"New Reservation request available", Enums.MailPurpose.GUIDE_CONFIRMATION);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         delegateExecution.getProcessEngineServices().getRuntimeService()
                 .createMessageCorrelation("MakeReservationRequest")
                 .setVariable("email", email)
@@ -64,6 +58,12 @@ public class SendNewReservationDelegate implements JavaDelegate {
                 .setVariable("date", date)
                 .setVariable("processInstanceId",  delegateExecution.getVariable("processInstanceId").toString())
                 .correlate();
+
+        try {
+            JavaMailUtil.sendMail(guideEmail,"New Reservation request available", Enums.MailPurpose.GUIDE_CONFIRMATION);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }

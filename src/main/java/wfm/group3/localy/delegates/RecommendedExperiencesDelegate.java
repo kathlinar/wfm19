@@ -35,7 +35,6 @@ public class RecommendedExperiencesDelegate implements JavaDelegate {
         Experience[] experiences = (Experience[]) delegateExecution.getVariable("Experiences");
         String email = delegateExecution.getVariable("email").toString();
         String dateStr = delegateExecution.getVariable("date").toString();
-        LOGGER.info("Date for recommendation: " + dateStr);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(dateStr, formatter);
         Person person = personRepository.findByEmail(email);

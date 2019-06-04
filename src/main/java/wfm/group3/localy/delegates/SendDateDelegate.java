@@ -15,8 +15,6 @@ public class SendDateDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) {
-        LOGGER.info(delegateExecution.hasVariable("date") ? "yes" : "no");
-        LOGGER.info(delegateExecution.getVariable("date").toString());
         LocalDate date = LocalDate.parse(delegateExecution.getVariable("date").toString(), formatter);
         String email = (String) delegateExecution.getVariable("email");
         LOGGER.info("Email extracted " + email);

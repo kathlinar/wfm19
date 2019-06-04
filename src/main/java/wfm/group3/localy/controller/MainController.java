@@ -180,13 +180,19 @@ public class MainController {
 
         // this.runtimeService.setVariable(processDefId,"canceled",true);
         System.out.println(payload.get("reservationId"));
-        this.runtimeService.createMessageCorrelation("InitUserCancellation").setVariable("reservationId", payload.get("reservationId").toString()).correlate();
 
         for (ProcessInstance processInstance : this.customerInstances.get(payload.get("email").toString())) {
             if (processInstance.getId().equals(processInstanceId)) {
                 this.customerInstances.get(payload.get("email").toString()).remove(processInstance);
             }
         }
+
+        this.runtimeService.createMessageCorrelation("InitUserCancellation")
+                .setVariable("reservationId", payload.get("reservationId").toString())
+                .processInstanceId(processInstanceId)
+                .correlate();
+
+
 
         return new ResponseEntity(HttpStatus.OK);
     }

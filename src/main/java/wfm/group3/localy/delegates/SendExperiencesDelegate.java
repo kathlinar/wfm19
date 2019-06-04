@@ -18,9 +18,7 @@ public class SendExperiencesDelegate implements JavaDelegate {
 
         LOGGER.info("Sending Message 'ReceiveExperiences");
         Experience[] experiences = (Experience[]) delegateExecution.getVariable("Experiences");
-        for(Experience e : experiences){
-            LOGGER.info(e.toString());
-        }
+        LOGGER.info("Retrieved " + experiences.length + " experiences.");
         ObjectValue typedObjectValue = Variables
                 .objectValue(experiences)
                 .serializationDataFormat(Variables.SerializationDataFormats.JAVA)

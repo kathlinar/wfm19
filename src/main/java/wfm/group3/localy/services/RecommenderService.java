@@ -31,22 +31,17 @@ public class RecommenderService {
     public Experience[] getRecommendation(Person person, Experience[] experiences, LocalDate date) {
         List<Experience> topExperiences = experienceRepository.findTopExperiences(date);
         if(person != null && experiences != null){
-            LOGGER.info("do stuff here with " + person.getEmail() + " and " + experiences.length + " experiences.");
             List<Reservation> personReservations = reservationRepository.findReservationsByPersonId(person.getId());
-            LOGGER.info("Found " + personReservations.size() + " reservations.");
             Map<Enums.ExperienceType, MutableInt> typeOccurances = calculateTypeOccurences(personReservations);
             Enums.ExperienceType favoriteType = Enums.ExperienceType.getRandom();
             int favoriteCount = 0;
             for(Map.Entry<Enums.ExperienceType, MutableInt> entry : typeOccurances.entrySet()){
-                LOGGER.info("Found " + entry.getValue().get() + " entries for type " + entry.getKey().name());
                 if(entry.getValue().get() > favoriteCount){
                     favoriteCount = entry.getValue().get();
                     favoriteType = entry.getKey();
                 }
             }
             experiences = sortByPreferences(experiences, topExperiences, favoriteType);
-        }else{
-            LOGGER.info("Do nothing with person " + person + " or null array.");
         }
 
         return experiences;
@@ -55,7 +50,6 @@ public class RecommenderService {
     private Map<Enums.ExperienceType, MutableInt> calculateTypeOccurences(List<Reservation> reservations) {
         Map<Enums.ExperienceType, MutableInt> resultMap = new HashMap<>();
         for(Reservation reservation : reservations){
-            System.out.println(reservation);
             if(reservation == null){
                 continue;
             }
@@ -100,9 +94,7 @@ public class RecommenderService {
             }
         }
         for(Experience exp : experiences){
-            if(resultList.contains(exp)){
-                LOGGER.info("Experience already in the list.");
-            }else{
+            if(!resultList.contains(exp)){
                 resultList.add(exp);
             }
         }
