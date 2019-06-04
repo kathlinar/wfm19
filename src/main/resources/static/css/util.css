@@ -21,3 +21,10 @@ img.logo-mini{
     text-align: center;
     margin-top: 5%;
 }
+
+.recommendation{
+    border-style: solid;
+    border-width: 3px;
+    background: linear-gradient(to bottom, #ffd65e 0%,#febf04 100%);
+    border-color: darkgray;
+}

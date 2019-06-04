@@ -15,4 +15,7 @@ public interface ExperienceRepository extends JpaRepository<Experience, Long> {
     @Query("SELECT exp FROM Experience exp WHERE exp.maxGroupSize > (SELECT count(res.experienceId) FROM Reservation res WHERE res.experienceId=exp.id AND res.reservationDate=(:date) AND res.status='CONFIRMED')")
     List<Experience> findExperiencesByNoReservationYet(@Param("date") LocalDate date);
 
+    @Query("SELECT exp FROM Experience exp, Reservation res1 WHERE exp.maxGroupSize > (SELECT count(res.experienceId) FROM Reservation res WHERE res.experienceId=exp.id AND res.reservationDate=(:date) AND res.status='CONFIRMED') AND exp.id = res1.experienceId GROUP BY res1.experienceId ORDER BY COUNT(res1) DESC")
+    List<Experience> findTopExperiences(@Param("date") LocalDate date);
+
 }

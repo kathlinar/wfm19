@@ -28,14 +28,11 @@ public class RetrieveExperiencesDelegate implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws Exception {
         LOGGER.info("Retrieving experiences");
         String dateStr = delegateExecution.getVariable("date").toString();
-        LOGGER.info(dateStr);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(dateStr, formatter);
         List<Experience> experiences = this.reservationService.retrieveExperiences(date);
         Experience[] arr = new Experience[experiences.size()];
         experiences.toArray(arr);
-        LOGGER.info("Found " + experiences.size() +  " experiences.");
-        //this.mainController.getRecommendedExperiences(experiences,delegateExecution.getVariable("email").toString());
 
         delegateExecution.setVariable("Experiences", arr);
     }

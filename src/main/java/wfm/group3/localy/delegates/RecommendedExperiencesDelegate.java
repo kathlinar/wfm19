@@ -10,6 +10,8 @@ import wfm.group3.localy.entity.Person;
 import wfm.group3.localy.repository.PersonRepository;
 import wfm.group3.localy.services.RecommenderService;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
@@ -32,10 +34,12 @@ public class RecommendedExperiencesDelegate implements JavaDelegate {
         LOGGER.info("Recommending experiences");
         Experience[] experiences = (Experience[]) delegateExecution.getVariable("Experiences");
         String email = delegateExecution.getVariable("email").toString();
-        LOGGER.info(experiences.toString());
-        LOGGER.info(email);
+        String dateStr = delegateExecution.getVariable("date").toString();
+        LOGGER.info("Date for recommendation: " + dateStr);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dateStr, formatter);
         Person person = personRepository.findByEmail(email);
-        Experience[] recommendations = this.recommenderService.getRecommendation(person, experiences);
+        Experience[] recommendations = this.recommenderService.getRecommendation(person, experiences,date);
         this.mainController.getRecommendedExperiences(Arrays.asList(recommendations),delegateExecution.getVariable("email").toString());
     }
 }

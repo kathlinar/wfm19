@@ -29,6 +29,8 @@ public class ExperienceFrontend implements Serializable {
 
     private String startTime;
 
+    private Boolean isRecommended;
+
     public ExperienceFrontend(Experience experience) {
         this.id = experience.getId();
         this.name = experience.getName();
@@ -38,6 +40,7 @@ public class ExperienceFrontend implements Serializable {
         this.maxGroupSize = experience.getMaxGroupSize();
         this.address = experience.getLocation().getCity() + ", " + experience.getLocation().getStreet();
         this.duration = String.format("%02d", experience.getDuration().toHoursPart()) + ":" + String.format("%02d", experience.getDuration().toMinutesPart());
+        this.isRecommended = experience.isRecommended() == null ? false : experience.isRecommended();
         if(experience.getStartTime() != null)
             this.startTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(experience.getStartTime());
     }
@@ -112,6 +115,14 @@ public class ExperienceFrontend implements Serializable {
 
     public String getStartTime() {
         return startTime;
+    }
+
+    public Boolean isRecommended() {
+        return isRecommended;
+    }
+
+    public void setRecommended(Boolean recommended) {
+        isRecommended = recommended;
     }
 
     @Override

@@ -37,7 +37,7 @@
     <p class="paragraph">Please select your desired time and date</p>
     <datetime  class="text-center" type="date" v-model="datetime" :min-datetime="minDateTime"></datetime>
     <b-table id="table" style="padding-top: 3%; padding-left: 15%; padding-right: 15%" bordered outlined striped responsive
-                 :fields="fields" :items="items" class="text-center">
+                 :fields="fields" :items="items" :tbody-tr-class="rowClass" class="text-center">
         <template slot="reserve" scope="item">
             <b-btn class="text-center" size="sm" @click="reserve(item.item)">Reserve</b-btn>
         </template>
@@ -118,6 +118,15 @@
 
         },
         methods:{
+            rowClass(item, type) {
+                console.log(item);
+                if(!item){
+                    return;
+                }
+                if(item.recommended === true){
+                    return 'recommendation'
+                }
+            },
             start(){
                 let _this = this;
                 if(!this.resTxt.includes("Their was an error")){

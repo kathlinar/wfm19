@@ -45,6 +45,17 @@ public class Experience implements Serializable {
     @ManyToMany(mappedBy = "offers")
     private Set<Person> offeredBy = new HashSet<>();
 
+    @Column
+    private Boolean isRecommended = false;
+
+    public Boolean isRecommended() {
+        return isRecommended;
+    }
+
+    public void setRecommended(Boolean recommended) {
+        isRecommended = recommended;
+    }
+
     public Long getId() {
         return id;
     }
