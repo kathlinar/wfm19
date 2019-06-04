@@ -54,6 +54,9 @@ public class JavaMailUtil {
                 //We cancel the reservation because the user would have an experience overlap, user receives cancellation notice
                 message = prepareOverlapCancellation(session, myAccountEmail, recipient, detail);
                 break;
+            case GUIDE_CONFIRMATION:
+                message = prepareGuideConfirmation(session, myAccountEmail, recipient, detail);
+                break;
         }
 
         Transport.send(message);
@@ -154,6 +157,23 @@ public class JavaMailUtil {
                     detail + "<br> " +
                     "<p>You can always look for other experiences on local.ly.</p><br><p>See you " +
                     "next time!</p><br><p>local.ly</p>";
+            message.setContent(emailContent, "text/html");
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return message;
+    }
+
+    private static Message prepareGuideConfirmation(Session session, String myAccountEmail, String
+            recipient, String detail) {
+
+        Message message = new MimeMessage(session);
+        try {
+            message.setFrom(new InternetAddress(myAccountEmail));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+            message.setSubject("WFM: New Reservation requests");
+            String emailContent = "<p>" + detail + "</p>";
             message.setContent(emailContent, "text/html");
         } catch (Exception e) {
             // TODO Auto-generated catch block
