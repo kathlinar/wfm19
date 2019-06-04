@@ -17,13 +17,16 @@
 </head>
 <body>
 <div id="app">
-    <div>
+    <div v-show="authorized">
         <b-navbar toggleable="lg" type="dark" variant="info">
             <b-navbar-brand href="#">locally</b-navbar-brand>
 
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav>
+                <b-navbar-nav>
+                    <b-nav-item @click="goTo">My Experiences</b-nav-item>
+                </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
 
                     <b-nav-item-dropdown right>
@@ -34,17 +37,19 @@
             </b-collapse>
         </b-navbar>
     </div>
-    <p class="paragraph">Please select your desired time and date</p>
-    <datetime  class="text-center" type="date" v-model="datetime" :min-datetime="minDateTime"></datetime>
+    <p class="paragraph" v-show="authorized">Please select your desired time and date</p>
+    <datetime  class="text-center" type="date" v-model="datetime" :min-datetime="minDateTime" v-show="authorized"></datetime>
     <b-table id="table" style="padding-top: 3%; padding-left: 15%; padding-right: 15%" bordered outlined striped responsive
-                 :fields="fields" :items="items" :tbody-tr-class="rowClass" class="text-center">
+                 :fields="fields" :items="items" :tbody-tr-class="rowClass"  class="text-center" v-show="authorized">
         <template slot="reserve" scope="item">
             <b-btn class="text-center" size="sm" @click="reserve(item.item)">Reserve</b-btn>
         </template>
     </b-table>
-    <div class="text-center">
+    <!--<div class="text-center">
         <b-button :href="'registeredExperiences.html?email='+email">Booked Experiences</b-button>
-    </div>
+    </div>-->
+
+    <h1 v-show="!authorized">You are not permitted to access this page, whether due to wrong email address or you are not logged in yet</h1>
 
     <b-modal id="reservation" v-model="modalShow" title="Reservation" hide-footer
              @hidden="start">
@@ -63,6 +68,7 @@
             resTxt: '',
             email: '',
             minDateTime: '',
+            authorized: true,
             fields: {
                 id: {
                     label: 'ID',
@@ -108,13 +114,16 @@
             items: [],
         },
         created() {
+            let that = this;
             this.baseUrl = window.location.origin + "/";
             var url = new URL(window.location.href);
             this.email = url.searchParams.get("email");
             this.minDateTime = new Date().toISOString();
-            /*axios.get(this.baseUrl + "getExperiences/"+this.email).then(response => {
-                this.items = response.data;
-            });*/
+            axios.get(this.baseUrl + "checkLoginState/"+this.email).then(response => {
+                that.authorized = true;
+            }).catch(function (error) {
+                that.authorized = false;
+            });
 
         },
         methods:{
@@ -126,6 +135,9 @@
                 if(item.recommended === true){
                     return 'recommendation'
                 }
+            },
+            goTo(){
+                window.location.href = "registeredExperiences.html?email="+this.email;
             },
             start(){
                 let _this = this;

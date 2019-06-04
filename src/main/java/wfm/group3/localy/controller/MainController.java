@@ -2,6 +2,7 @@ package wfm.group3.localy.controller;
 
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,12 @@ import wfm.group3.localy.services.PersonService;
 import wfm.group3.localy.services.ReservationService;
 import wfm.group3.localy.utils.Enums;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Controller
 public class MainController {
@@ -79,6 +79,7 @@ public class MainController {
                         .execute());
                 this.lastRecommendedExperiences.remove(payload.get("email").toString());
                 this.lastSelectedDate.remove(payload.get("email").toString());
+
                 return new ResponseEntity(HttpStatus.OK);
             }
         }
@@ -190,6 +191,25 @@ public class MainController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/checkLoginState/{email}" ,method = RequestMethod.GET)
+    public ResponseEntity checkLogin(@PathVariable("email") String email){
+        if(!email.isEmpty()) {
+           if (this.customerInstances.containsKey(email) && this.customerInstances.get(email).size() > 0){
+                List<Task> tasks = this.taskService.createTaskQuery().processInstanceId(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1).getId()).list();
+
+                if(tasks.size() == 1){
+                    if(! tasks.get(0).getCreateTime().before(Date.from(Instant.now().minus(1, ChronoUnit.HOURS)))){
+                        return new ResponseEntity(HttpStatus.OK);
+                    }else{
+                        this.runtimeService.deleteProcessInstance(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1).getId(),"");
+                        this.customerInstances.get(email).remove(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1));
+                    }
+                }
+            }
+
+        }
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
 
     @RequestMapping(value = "/attendExperience", method = RequestMethod.POST)
     public ResponseEntity attendExperience(@RequestBody Map<String, Object> payload) {
