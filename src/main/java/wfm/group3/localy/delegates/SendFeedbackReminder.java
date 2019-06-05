@@ -4,11 +4,13 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.batch.core.job.SimpleJob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import wfm.group3.localy.entity.Reservation;
 import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.ReservationRepository;
+import wfm.group3.localy.services.ScheduleService;
 import wfm.group3.localy.utils.FeedbackReminder;
 
 import java.text.SimpleDateFormat;
@@ -30,6 +32,9 @@ public class SendFeedbackReminder implements JavaDelegate {
     @Autowired
     private ExperienceRepository experienceRepository;
 
+    @Autowired
+    private Scheduler scheduler;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
@@ -41,26 +46,34 @@ public class SendFeedbackReminder implements JavaDelegate {
 
         Reservation reservation = reservationRepository.findReservationId(reservationId);
 
-        /*Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-        Trigger trigger;
+        FeedbackReminder feedbackReminder;
+
 
         JobDataMap map = new JobDataMap();
         map.put("email",email);
         map.put("detail",experienceRepository.getOne(reservation.getExperienceId()).getName());
 
-        JobDetail job = newJob(FeedbackReminder.class)
-                .withIdentity("feedback-reminder")
+        JobDetail job = newJob(map);
+
+        scheduler.scheduleJob(job,trigger(job, java.sql.Date.valueOf(reservation.getReservationDate())));
+    }
+
+    private JobDetail newJob(JobDataMap map) {
+        return JobBuilder.newJob().ofType(FeedbackReminder.class).storeDurably()
                 .setJobData(map)
-                .storeDurably()
                 .build();
+    }
 
+    private Trigger trigger(JobDetail jobDetail, Date date) {
 
-        trigger = newTrigger().withIdentity("attendedEvent")
-                .startAt(new Date(System.currentTimeMillis()+5*60*1000))
-                .forJob(job)
+        Calendar cal = Calendar.getInstance(); // creates calendar
+        cal.setTime(date); // sets calendar time/date
+        cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+        Date nDate = cal.getTime(); // returns new date object, one hour in the future
+
+        return TriggerBuilder.newTrigger().forJob(jobDetail)
+                .withIdentity(jobDetail.getKey().getName(), jobDetail.getKey().getGroup())
+                .startAt(nDate)
                 .build();
-
-        scheduler.scheduleJob(job,trigger);*/
-
     }
 }
