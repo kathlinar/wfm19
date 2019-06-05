@@ -24,7 +24,6 @@ public class ForwardReservationToGuideDelegate implements JavaDelegate {
                 .setVariable("reservationId", reservationId)
                 .setVariable("processInstanceId",instanceId)
                 .processInstanceId(instanceId)
-                .processInstanceBusinessKey(instanceId)
                 .correlate();
     }
 }

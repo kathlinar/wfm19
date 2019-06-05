@@ -26,6 +26,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("UPDATE Reservation res SET res.attended=:attended WHERE res.reservationId=(:rID)")
     int updateAttended(@Param("rID") Long reservationId, @Param("attended") boolean attended);
 
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query("UPDATE Reservation res SET res.status=:status WHERE res.reservationId=(:rID)")
+    int updateStatus(@Param("rID") Long reservationId, @Param("status") Enums.ReservationStatus status);
+
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query("UPDATE Reservation res SET res.feedback=:feedback WHERE res.reservationId=(:rID)")

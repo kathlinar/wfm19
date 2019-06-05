@@ -35,6 +35,8 @@ public class BookedExperiences {
 
     private Enums.ReservationStatus status;
 
+    private String feedback;
+
     public BookedExperiences(Experience experience, Reservation reservation) {
         this.id = reservation.getReservationId();
         this.experienceId = experience.getId();
@@ -46,9 +48,11 @@ public class BookedExperiences {
         this.duration = experience.getDuration();
         this.durationString = String.format("%02d", experience.getDuration().toHoursPart()) + ":" + String.format("%02d", experience.getDuration().toMinutesPart());
         this.startTime = experience.getStartTime();
+
         this.attended = reservation.getAttended();
         this.reservationDate = reservation.getReservationDate();
         this.status = reservation.getStatus();
+        this.feedback = reservation.getFeedback();
     }
 
     public Long getId() {
@@ -155,5 +159,11 @@ public class BookedExperiences {
         this.attended = attended;
     }
 
+    public String getFeedback() {
+        return feedback;
+    }
 
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
 }

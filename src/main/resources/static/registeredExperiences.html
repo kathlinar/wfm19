@@ -40,29 +40,31 @@
     <b-table id="table" style="padding-top: 3%; padding-left: 15%; padding-right: 15%" bordered outlined striped responsive
                  :fields="fields" :items="items" class="text-center" v-show="authorized">
         <template slot="cancel" scope="item">
-            <b-btn class="text-center" size="sm" @click="cancel(item.item)" :disabled="!cancelDisabled(item.item)">Cancel</b-btn>
+            <b-btn class="text-center" size="sm" @click="cancel(item.item)" :disabled="cancelDisabled(item.item)">Cancel</b-btn>
         </template>
         <template slot="attended" scope="item">
-            <b-btn class="text-center" size="sm" @click="attended(item.item)">Attend</b-btn>
+            <b-btn class="text-center" size="sm" @click="attended(item.item)" :disabled="attendedDisabled(item.item)">Attend</b-btn>
         </template>
         <template slot="feedback" scope="item">
-            <b-btn class="text-center" size="sm" @click="saveRID(item.item)" :disabled="!isDisabled(item.item)" v-b-modal.modal-1>Feedback</b-btn>
+            <b-btn class="text-center" size="sm" @click="saveRID(item.item)" :disabled="!isDisabled(item.item)">Feedback</b-btn>
         </template>
     </b-table>
 
-    <b-modal id="reservation" v-model="modalShow" title="Reservation" hide-footer>
+    <b-modal id="reservation" v-model="modalShow" :title="modalTitle" hide-footer @hidden="reload">
         <div class="d-block text-center">
             <h4>{{reservationTxt}}</h4>
         </div>
     </b-modal>
-    <b-modal id="modal-1" v-model="modalShow2" title="Feedback" @ok="feedback()">
+    <b-modal id="modal-1" v-model="modalShow2" title="Feedback" @ok="feedback()" @hidden="reload">
         <b-form-textarea
                 id="textarea-auto-height"
                 v-model="text"
                 placeholder="Please write your feedback here if you attended the experience."
                 rows="3"
                 max-rows="8"
+                v-show="showTextArea"
         ></b-form-textarea>
+        <h4 v-show="!showTextArea">You already gave a feedback to this experience</h4>
     </b-modal>
 
 
@@ -82,6 +84,8 @@
             authorized: true,
             text: '',
             rID: '',
+            modalTitle: '',
+            showTextArea: true,
             fields: {
                 name:{
                     label: 'Name',
@@ -120,13 +124,13 @@
                     sortable: false
                 },
                 cancel:{
-                    label: 'cancel',
+                    label: 'Cancel',
                 },
                 attended: {
-                    label: 'attended',
+                    label: 'Attend',
                 },
                 feedback: {
-                    label: 'feedback'
+                    label: 'Feedback'
                 }
 
             },
@@ -149,6 +153,9 @@
 
         },
         methods:{
+            reload(){
+                window.location.href = "registeredExperiences.html?email="+this.email;
+            },
             goTo(){
                 window.location.href = "mainpage.html?email="+this.email;
             },
@@ -160,26 +167,26 @@
                         date: item.reservationDate,
                         email: this.email,
                     }).then(function (response) {
+                        _this.modalTitle = 'Cancellation';
                         _this.reservationTxt = 'The cancellation of ' + item.name + ' was successful';
                         _this.modalShow = true;
                     })
                         .catch(function (error) {
+                            _this.modalTitle = 'Cancellation';
                             _this.reservationTxt = 'There was an error on the cancellation of ' + item.name;
                             _this.modalShow = true;
                         });
-                }else{
-
-                    _this.reservationTxt = 'The cancellation is only possible if status is confirmed';
-                    _this.modalShow = true;
                 }
             },
             attended(item){
 
                 let _this = this;
                 if(item.status !== "CONFIRMED"){
+                    _this.modalTitle = 'Attendance';
                     _this.reservationTxt = 'Experience is has to be confirmed in order to be attended';
                     _this.modalShow = true;
                 } else if (item.attended === true) {
+                    _this.modalTitle = 'Attendance';
                     _this.reservationTxt = item.name + ' already attended';
                     _this.modalShow = true;
                 } else if (item.status === "CONFIRMED") {
@@ -187,19 +194,17 @@
                         reservationId: item.id,
                         email: this.email,
                     }).then(function (response) {
+                        _this.modalTitle = 'Attendance';
                         _this.reservationTxt = 'The attendance of ' + item.name + ' was successful';
                         _this.modalShow = true;
                         item.attended = true;
                     })
                         .catch(function (error) {
+                            _this.modalTitle = 'Attendance';
                             _this.reservationTxt = 'There was an error on the attendance of ' + item.name;
                             _this.modalShow = true;
                         });
                 }
-
-
-
-
             },
             feedback(){
               let _this = this;
@@ -228,15 +233,24 @@
             },
             saveRID(item) {
                 this.rID = item.id;
+                this.modalShow2 = true;
+                if(item.feedback === "")
+                    this.showTextArea = true;
+                else
+                    this.showTextArea = false;
+
             },
 
             isDisabled(item){
-                return (new Date()>= new Date(item.reservationDate))&& (item.attended === true) && item.status === "CONFIRMED";
+                return (new Date()>= new Date(item.reservationDate)) && (item.attended === true) && item.status === "CONFIRMED_AND_ATTENDED";
             },
 
             cancelDisabled(item) {
-                return (item.attended !== true);
-            }
+                return (item.attended === true || item.status !== "CONFIRMED");
+            },
+            attendedDisabled(item){
+                return item.status !== "CONFIRMED";
+            },
 
         },
 

@@ -18,7 +18,7 @@ public class Enums {
     }
 
     public enum ReservationStatus {
-        PENDING, CANCELLED, CONFIRMED, OVERLAP, GROUP_FULL
+        PENDING, CANCELLED, CONFIRMED, OVERLAP, GROUP_FULL, CONFIRMED_AND_ATTENDED
     }
 
     public enum MailPurpose {

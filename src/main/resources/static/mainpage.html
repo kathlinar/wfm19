@@ -25,7 +25,7 @@
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-                    <b-nav-item @click="goTo">Booked Experiences</b-nav-item>
+                    <b-nav-item @click="goTo">My Experiences</b-nav-item>
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
 
@@ -45,6 +45,8 @@
             <b-btn class="text-center" size="sm" @click="reserve(item.item)">Reserve</b-btn>
         </template>
     </b-table>
+
+    <h1 v-show="!authorized">You are not permitted to access this page, whether due to wrong email address or you are not logged in yet</h1>
 
     <b-modal id="reservation" v-model="modalShow" title="Reservation" hide-footer
              @hidden="start">
@@ -113,7 +115,9 @@
             this.baseUrl = window.location.origin + "/";
             var url = new URL(window.location.href);
             this.email = url.searchParams.get("email");
-            this.minDateTime = new Date().toISOString();
+            var myDate = new Date();
+            myDate.setDate(myDate.getDate() + 1);
+            this.minDateTime = myDate.toISOString();
             axios.get(this.baseUrl + "checkLoginState/"+this.email).then(response => {
                 that.authorized = true;
             }).catch(function (error) {

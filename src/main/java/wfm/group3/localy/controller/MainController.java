@@ -112,6 +112,12 @@ public class MainController {
                         .execute());
                 this.customerInstances.put(person.getEmail(), list);
             } else {
+                String processInstanceId = this.processIdHelper(person.getEmail());
+                List<Task> tasks = this.taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+                if(tasks.get(0).getName().equals("Select Date")) {
+                    this.runtimeService.deleteProcessInstance(processInstanceId,"");
+                    this.customerInstances.get(person.getEmail()).remove(this.customerInstances.get(person.getEmail()).get(this.customerInstances.get(person.getEmail()).size() - 1));
+                }
                 this.customerInstances.get(person.getEmail()).add(this.runtimeService.createProcessInstanceByKey("Customer")
                         .setVariables(payload)
                         .setVariable("loggedIn", false)
@@ -217,26 +223,30 @@ public class MainController {
     @RequestMapping(value = "/attendExperience", method = RequestMethod.POST)
     public ResponseEntity attendExperience(@RequestBody Map<String, Object> payload) {
 
-        /*String processInstanceId = this.reservationRepository
-                .findByReservationDate(LocalDate.parse(payload.get("date").toString().replace("T", " "), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .get(0)
-                .getProcessInstanceId();*/
         String email = payload.get("email").toString();
-        String processInstanceId = processIdHelper(email);
-
-        this.reservationRepository.updateAttended(Long.parseLong(payload.get("reservationId").toString()),true);
 
 
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+        Optional<Reservation> reservationOptional = this.reservationRepository.findById(Long.parseLong(payload.get("reservationId").toString()));
 
-        this.runtimeService.setVariable(processInstanceId, "email", email);
-        this.runtimeService.setVariable(processInstanceId, "reservationId", payload.get("reservationId").toString());
-        this.runtimeService.setVariable(processInstanceId,"processInstanceId",processInstanceId);
+        if(reservationOptional.isPresent()){
+            String processInstanceId = reservationOptional.get().getProcessInstanceId();
+            this.reservationRepository.updateAttended(Long.parseLong(payload.get("reservationId").toString()),true);
+            this.reservationRepository.updateStatus(Long.parseLong(payload.get("reservationId").toString()), Enums.ReservationStatus.CONFIRMED_AND_ATTENDED);
 
-        if (tasks.get(0).getName().equals("Attend Event/Experience"))
-            this.taskService.complete(tasks.get(0).getId());
 
-        return new ResponseEntity(HttpStatus.OK);
+            List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+
+            this.runtimeService.setVariable(processInstanceId, "email", email);
+            this.runtimeService.setVariable(processInstanceId, "reservationId", payload.get("reservationId").toString());
+            this.runtimeService.setVariable(processInstanceId,"processInstanceId",processInstanceId);
+
+            if (tasks.get(0).getName().equals("Attend Event/Experience"))
+                this.taskService.complete(tasks.get(0).getId());
+
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+
     }
     /*@RequestMapping(value = "/checkAttended", method = RequestMethod.POST)
     public ResponseEntity <List<Boolean>> checkAttended(@RequestBody Map<String, Object> payload) {
@@ -253,19 +263,27 @@ public class MainController {
     @RequestMapping(value = "/sendFeedback", method = RequestMethod.POST)
     public ResponseEntity sendFeedback(@RequestBody Map<String, Object> payload) {
         String email = payload.get("email").toString();
-        String processInstanceId = processIdHelper(email);
-        this.reservationRepository.setFeedback(Long.parseLong(payload.get("reservationId").toString()),payload.get("feedback").toString());
 
-        Person pers = this.personRepository.findByEmail(email);
-        List <Reservation> list = reservationRepository.findReservationsByPersonId(Long.parseLong(pers.getId().toString()));
-        for (Reservation res: list) {
-            System.out.println(res.getReservationId() +": " +res.getFeedback());
+        Optional<Reservation> reservationOptional = this.reservationRepository.findById(Long.parseLong(payload.get("reservationId").toString()));
+        if(reservationOptional.isPresent()) {
+            this.reservationRepository.setFeedback(reservationOptional.get().getReservationId(),payload.get("feedback").toString());
+            /*Person pers = this.personRepository.findByEmail(email);
+            List<Reservation> list = reservationRepository.findReservationsByPersonId(Long.parseLong(pers.getId().toString()));
+            for (Reservation res : list) {
+                System.out.println(res.getReservationId() + ": " + res.getFeedback());
+            }
+
+            List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+            if (tasks.get(0).getName().equals("Feedback about experience"))
+                this.taskService.complete(tasks.get(0).getId());*/
+
+            this.runtimeService.createMessageCorrelation("UserFeedback")
+                    .correlate();
+
+            return new ResponseEntity(HttpStatus.OK);
         }
 
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
-        if (tasks.get(0).getName().equals("Feedback about experience"))
-            this.taskService.complete(tasks.get(0).getId());
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/makeReservation", method = RequestMethod.POST)
