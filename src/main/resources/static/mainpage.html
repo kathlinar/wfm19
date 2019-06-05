@@ -46,7 +46,7 @@
         </template>
     </b-table>
 
-    <h1 v-show="!authorized">You are not permitted to access this page, whether due to wrong email address or you are not logged in yet</h1>
+    <h2 v-show="!authorized">You are not permitted to access this page, whether due to wrong email address or you are not logged in yet</h2>
 
     <b-modal id="reservation" v-model="modalShow" title="Reservation" hide-footer
              @hidden="start">

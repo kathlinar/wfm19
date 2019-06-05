@@ -68,7 +68,7 @@
     </b-modal>
 
 
-    <h1 v-show="!authorized">You are not permitted to access this page, whether due to wrong email address or you are not logged in yet</h1>
+    <h2 v-show="!authorized">You are not permitted to access this page, whether due to wrong email address or you are not logged in yet</h2>
 
 </div>
 </body>
@@ -208,18 +208,20 @@
             },
             feedback(){
               let _this = this;
-                axios.post('/sendFeedback', {
-                    reservationId: this.rID,
-                    email: this.email,
-                    feedback: this.text,
-                }).then(function (response) {
+                if(this.showTextArea){
+                    axios.post('/sendFeedback', {
+                        reservationId: this.rID,
+                        email: this.email,
+                        feedback: this.text,
+                    }).then(function (response) {
 
-                })
+                    })
                     .catch(function (error) {
                         _this.modalShow = true;
                     });
-
-                this.text = '';
+                    this.text = '';
+                }
+                this.modalShow2 = false;
             },
             logout() {
                 axios.post('logout', {
@@ -234,7 +236,7 @@
             saveRID(item) {
                 this.rID = item.id;
                 this.modalShow2 = true;
-                if(item.feedback === "")
+                if(item.feedback === null)
                     this.showTextArea = true;
                 else
                     this.showTextArea = false;
