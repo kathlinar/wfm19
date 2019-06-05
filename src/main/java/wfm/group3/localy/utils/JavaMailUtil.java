@@ -69,10 +69,26 @@ public class JavaMailUtil {
             message.setFrom(new InternetAddress(myAccountEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             message.setSubject("We're sorry ... ");
-            String emailContent = "<p>Thank you for reserving experiences with local.ly. Unfortunately, we had to " +
-                    "cancel your reservation for <br>" + detail + "<br> because you would have an overlap with another already confirmed experience." +
-                    "<p>You can always look for other experiences on local.ly.</p><br><p>Hope to see you at another " +
-                    "experience!</p><br><p>local.ly</p>";
+
+            String emailContent = "<html>\n" +
+                    "<head>\n" +
+                    "\t<title>Thank you for reserving a local.ly experience</title>\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "</head>\n" +
+                    "<body aria-readonly=\"false\"><strong><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">Thank you for reserving experiences with local.ly.&nbsp;</span></span></strong>\n" +
+                    "<p><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica," +
+                    "sans-serif\">Unfortunately, we had to cancel your reservation for <strong " +
+                    "style=\"font-size:12px\"><span style=\"background-color:rgb(255, 255, 255); color:rgb(34, 34, " +
+                    "34)\">"+detail+" </span></strong> because you would </span></span><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">have an overlap with another already confirmed experience. You can always look for other experiences on local.ly.</span></span></p>\n" +
+                    "\n" +
+                    "<pre>\n" +
+                    "<span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">Hope to see you at another experience!</span></span></pre>\n" +
+                    "<span style=\"font-size:12px\"><strong style=\"font-size:12px\"><span style=\"color:#800080\"><span style=\"font-family:courier new,courier,monospace\">local.ly</span></span></strong></span></body>\n" +
+                    "</html>\n";
             message.setContent(emailContent, "text/html");
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -87,10 +103,28 @@ public class JavaMailUtil {
             message.setFrom(new InternetAddress(myAccountEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             message.setSubject("We're sorry ... ");
-            String emailContent = "<p>Thank you for reserving experiences with local.ly. Unfortunately, we had to " +
-                    "cancel your reservation for <br>" + detail + "<br> because the experience group for the booked date is already full." +
-                    "<p>You can always look for other experiences on local.ly.</p><br><p>Hope to see you at another " +
-                    "experience!</p><br><p>local.ly</p>";
+
+            String emailContent = "<html>\n" +
+                    "<head>\n" +
+                    "\t<title>Thank you for reserving a local.ly experience</title>\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "</head>\n" +
+                    "<body aria-readonly=\"false\"><strong><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">Thank you for reserving experiences with local.ly.&nbsp;</span></span></strong>\n" +
+                    "<p><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica," +
+                    "sans-serif\">Unfortunately, we had to cancel your reservation for <strong><span " +
+                    "style=\"background-color:rgb(255, 255, 255); color:rgb(34, 34, 34)\">"+ detail+" </span></strong" +
+                    "> because the experience group for the booked date is already full</span></span><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">. You can always look for other experiences on local.ly.</span></span></p>\n" +
+                    "\n" +
+                    "<pre>\n" +
+                    "<span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">Hope to see you at another experience!</span></span></pre>\n" +
+                    "<span style=\"font-size:12px\"><strong><span style=\"color:#800080\"><span style=\"font-family:courier new,courier,monospace\">local.ly</span></span></strong></span></body>\n" +
+                    "</html>\n";
+
             message.setContent(emailContent, "text/html");
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -112,9 +146,27 @@ public class JavaMailUtil {
             message.setFrom(new InternetAddress(myAccountEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             message.setSubject("Your local.ly experience!");
-            String emailContent = "<h2>Thank you for reserving a local.ly experience</h2><br><p>Your local guides are " +
-                    "excited to meet you. Here's your requested experience:</p>" + detail + "<br> " +
-                    "<p>See you!</p></br><p>local.ly</p>";
+
+            String emailContent = "<html>\n" +
+                    "<head>\n" +
+                    "\t<title>Thank you for reserving a local.ly experience</title>\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "</head>\n" +
+                    "<body aria-readonly=\"false\">\n" +
+                    "<h3><span style=\"font-family:arial,helvetica,sans-serif\">Thank you for reserving a&nbsp;</span><span style=\"color:#800080\"><span style=\"font-family:courier new,courier,monospace\">local.ly</span></span><span style=\"font-family:arial,helvetica,sans-serif\"><span style=\"color:#800080\">&nbsp;</span>experience</span></h3>\n" +
+                    "<span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\"><span style=\"background-color:rgb(255, 255, 255); color:rgb(34, 34, 34)\">Your local guides are excited to meet you. Here&#39;s your requested experience:</span></span></span>\n" +
+                    "\n" +
+                    "<ul>\n" +
+                    "\t<li><span style=\"font-size:12px\"><strong><span style=\"font-family:arial,helvetica," +
+                    "sans-serif\"><span style=\"background-color:rgb(255, 255, 255); color:rgb(34, 34, 34)\">"+detail+"</span></span></strong></span></li>\n" +
+                    "</ul>\n" +
+                    "\n" +
+                    "<p><span style=\"font-size:12px\"><span style=\"background-color:rgb(255, 255, 255); color:rgb(34, 34, 34); font-family:arial,helvetica,sans-serif\">See you!</span></span></p>\n" +
+                    "<span style=\"font-size:12px\"> <strong><span style=\"color:#800080\"><span style=\"font-family:courier new,courier,monospace\">local.ly</span></span></strong></span></body>\n" +
+                    "</html>\n";
             message.setContent(emailContent, "text/html");
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -131,10 +183,28 @@ public class JavaMailUtil {
             message.setFrom(new InternetAddress(myAccountEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             message.setSubject("We're sorry ... ");
-            String emailContent = "<p>Thank you for reserving experiences with local.ly. Unfortunately, we had to " +
-                    "cancel your reservation for <br>" + detail + "<br> " +
-                    "<p>You can always look for other experiences on local.ly.</p><br><p>Hope to see you at another " +
-                    "experience!</p><br><p>local.ly</p>";
+            String emailContent = "<html>\n" +
+                    "<head>\n" +
+                    "\t<title>Thank you for reserving a local.ly experience</title>\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "</head>\n" +
+                    "<body aria-readonly=\"false\"><strong><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">Thank you for reserving experiences with local.ly.&nbsp;</span></span></strong>\n" +
+                    "<p><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica," +
+                    "sans-serif\">Unfortunately, we had to cancel your reservation for <strong><span " +
+                    "style=\"background-color:rgb(255, 255, 255); color:rgb(34, 34, 34)\">"+detail+"</span></strong" +
+                    "></span></span><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">. You can always look for other experiences on local.ly.</span></span></p>\n" +
+                    "\n" +
+                    "<pre>\n" +
+                    "<span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">Hope to see you at another experience!</span></span></pre>\n" +
+                    "<span style=\"font-size:12px\"><strong><span style=\"color:#800080\"><span style=\"font-family:courier new,courier,monospace\">local.ly</span></span></strong></span></body>\n" +
+                    "</html>\n";
+
             message.setContent(emailContent, "text/html");
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -152,11 +222,34 @@ public class JavaMailUtil {
             message.setFrom(new InternetAddress(myAccountEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             message.setSubject("Your local.ly cancellation");
-            String emailContent = "<p>Thank you for letting us know that you won't make it. We confirm your " +
-                    "cancellation for your experience:" +
-                    detail + "<br> " +
-                    "<p>You can always look for other experiences on local.ly.</p><br><p>See you " +
-                    "next time!</p><br><p>local.ly</p>";
+            String emailContent = "<html>\n" +
+                    "<head>\n" +
+                    "\t<title>Thank you for reserving a local.ly experience</title>\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "\t<link href=\"https://svc.webspellchecker.net/spellcheck31/lf/scayt3/ckscayt/css/wsc.css\" rel=\"stylesheet\" type=\"text/css\" />\n" +
+                    "</head>\n" +
+                    "<body aria-readonly=\"false\"><strong><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">Thank you for letting us know you can&#39;t make it.&nbsp;</span></span></strong>\n" +
+                    "<p><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">We confirm your cancellation of the experience:</span></span></p>\n" +
+                    "\n" +
+                    "<ul>\n" +
+                    "\t<li><span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica," +
+                    "sans-serif\"><strong><span style=\"background-color:rgb(255, 255, 255); color:rgb(34, 34, 34)" +
+                    "\">"+detail+"</span></strong></span></span><span style=\"font-size:12px\"><span " +
+                    "style=\"font-family:arial,helvetica,sans-serif\">. </span></span></li>\n" +
+                    "</ul>\n" +
+                    "\u200B<span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">You can always look for other experiences on local.ly.</span></span>\n" +
+                    "\n" +
+                    "<pre>\n" +
+                    "<span style=\"font-size:12px\"><span style=\"font-family:arial,helvetica,sans-serif\">See you next time!</span></span></pre>\n" +
+                    "<span style=\"font-size:12px\"><strong><span style=\"color:#800080\"><span style=\"font-family:courier new,courier,monospace\">local.ly</span></span></strong></span></body>\n" +
+                    "</html>\n";
+
             message.setContent(emailContent, "text/html");
         } catch (Exception e) {
             // TODO Auto-generated catch block

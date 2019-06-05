@@ -228,6 +228,11 @@ public class MainController {
 
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+
+        this.runtimeService.setVariable(processInstanceId, "email", email);
+        this.runtimeService.setVariable(processInstanceId, "reservationId", payload.get("reservationId").toString());
+        this.runtimeService.setVariable(processInstanceId,"processInstanceId",processInstanceId);
+
         if (tasks.get(0).getName().equals("Attend Event/Experience"))
             this.taskService.complete(tasks.get(0).getId());
 
@@ -276,6 +281,8 @@ public class MainController {
         this.runtimeService.setVariable(processInstance.getId(), "date", formatter.format(this.lastSelectedDate.get(email)));
         this.runtimeService.setVariable(processInstance.getId(), "processInstanceId", processInstance.getId());
         this.runtimeService.setVariable(processInstance.getId(), "experienceToReserve", payload.get("id").toString());
+
+        System.out.println("RESERVATION: " + tasks.get(0).getName());
 
         if (tasks.get(0).getName().equals("Choose desired experiences"))
             this.taskService.complete(tasks.get(0).getId());

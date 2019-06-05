@@ -58,7 +58,7 @@ public class FeedbackReminder implements Job {
             message.setSubject("Did you like your experience at " + detail + "?");
             String emailContent =
                     "<h2>How did you like your local.ly experience?</h2><br><p>We'd love if you could give us " +
-                            "some feedback about </p>" + detail + "<br> " +
+                            "some feedback about </p>" + detail + "!<br> " +
                     "<p>Thank you!</p></br><p>local.ly</p>";
 
             message.setContent(emailContent, "text/html");
