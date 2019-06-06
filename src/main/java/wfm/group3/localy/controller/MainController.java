@@ -2,7 +2,6 @@ package wfm.group3.localy.controller;
 
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,8 +113,8 @@ public class MainController {
             } else {
                 String processInstanceId = this.processIdHelper(person.getEmail());
                 List<Task> tasks = this.taskService.createTaskQuery().processInstanceId(processInstanceId).list();
-                if(tasks.get(0).getName().equals("Select Date")) {
-                    this.runtimeService.deleteProcessInstance(processInstanceId,"");
+                if (!tasks.isEmpty() && tasks.get(0).getName().equals("Select Date")) {
+                    this.runtimeService.deleteProcessInstance(processInstanceId, "");
                     this.customerInstances.get(person.getEmail()).remove(this.customerInstances.get(person.getEmail()).get(this.customerInstances.get(person.getEmail()).size() - 1));
                 }
                 this.customerInstances.get(person.getEmail()).add(this.runtimeService.createProcessInstanceByKey("Customer")
@@ -176,7 +175,7 @@ public class MainController {
     public ResponseEntity cancelReservation(@RequestBody Map<String, Object> payload) {
 
 
-        String processInstanceId= this.reservationRepository
+        String processInstanceId = this.reservationRepository
                 .findByReservationDate(LocalDate.parse(payload.get("date").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .get(0)
                 .getProcessInstanceId();
@@ -196,21 +195,20 @@ public class MainController {
                 .correlate();
 
 
-
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/checkLoginState/{email}" ,method = RequestMethod.GET)
-    public ResponseEntity checkLogin(@PathVariable("email") String email){
-        if(!email.isEmpty()) {
-           if (this.customerInstances.containsKey(email) && this.customerInstances.get(email).size() > 0){
+    @RequestMapping(value = "/checkLoginState/{email}", method = RequestMethod.GET)
+    public ResponseEntity checkLogin(@PathVariable("email") String email) {
+        if (!email.isEmpty()) {
+            if (this.customerInstances.containsKey(email) && this.customerInstances.get(email).size() > 0) {
                 List<Task> tasks = this.taskService.createTaskQuery().processInstanceId(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1).getId()).list();
 
-                if(tasks.size() == 1){
-                    if(! tasks.get(0).getCreateTime().before(Date.from(Instant.now().minus(1, ChronoUnit.HOURS)))){
+                if (tasks.size() == 1) {
+                    if (!tasks.get(0).getCreateTime().before(Date.from(Instant.now().minus(1, ChronoUnit.HOURS)))) {
                         return new ResponseEntity(HttpStatus.OK);
-                    }else{
-                        this.runtimeService.deleteProcessInstance(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1).getId(),"");
+                    } else {
+                        this.runtimeService.deleteProcessInstance(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1).getId(), "");
                         this.customerInstances.get(email).remove(this.customerInstances.get(email).get(this.customerInstances.get(email).size() - 1));
                     }
                 }
@@ -228,9 +226,9 @@ public class MainController {
 
         Optional<Reservation> reservationOptional = this.reservationRepository.findById(Long.parseLong(payload.get("reservationId").toString()));
 
-        if(reservationOptional.isPresent()){
+        if (reservationOptional.isPresent()) {
             String processInstanceId = reservationOptional.get().getProcessInstanceId();
-            this.reservationRepository.updateAttended(Long.parseLong(payload.get("reservationId").toString()),true);
+            this.reservationRepository.updateAttended(Long.parseLong(payload.get("reservationId").toString()), true);
             this.reservationRepository.updateStatus(Long.parseLong(payload.get("reservationId").toString()), Enums.ReservationStatus.CONFIRMED_AND_ATTENDED);
 
 
@@ -238,7 +236,7 @@ public class MainController {
 
             this.runtimeService.setVariable(processInstanceId, "email", email);
             this.runtimeService.setVariable(processInstanceId, "reservationId", payload.get("reservationId").toString());
-            this.runtimeService.setVariable(processInstanceId,"processInstanceId",processInstanceId);
+            this.runtimeService.setVariable(processInstanceId, "processInstanceId", processInstanceId);
 
             if (tasks.get(0).getName().equals("Attend Event/Experience"))
                 this.taskService.complete(tasks.get(0).getId());
@@ -265,8 +263,8 @@ public class MainController {
         String email = payload.get("email").toString();
 
         Optional<Reservation> reservationOptional = this.reservationRepository.findById(Long.parseLong(payload.get("reservationId").toString()));
-        if(reservationOptional.isPresent()) {
-            this.reservationRepository.setFeedback(reservationOptional.get().getReservationId(),payload.get("feedback").toString());
+        if (reservationOptional.isPresent()) {
+            this.reservationRepository.setFeedback(reservationOptional.get().getReservationId(), payload.get("feedback").toString());
             /*Person pers = this.personRepository.findByEmail(email);
             List<Reservation> list = reservationRepository.findReservationsByPersonId(Long.parseLong(pers.getId().toString()));
             for (Reservation res : list) {
@@ -334,7 +332,7 @@ public class MainController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    private String processIdHelper(String email){
+    private String processIdHelper(String email) {
         int posNewestInstance = this.customerInstances.get(email).size() - 1;
         return this.customerInstances.get(email).get(posNewestInstance).getId();
     }

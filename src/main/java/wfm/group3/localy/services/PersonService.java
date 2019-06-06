@@ -9,6 +9,7 @@ import wfm.group3.localy.entity.Reservation;
 import wfm.group3.localy.repository.ExperienceRepository;
 import wfm.group3.localy.repository.PersonRepository;
 import wfm.group3.localy.repository.ReservationRepository;
+import wfm.group3.localy.utils.Enums;
 import wfm.group3.localy.utils.PBKDF2Hasher;
 
 import java.time.LocalDate;
@@ -52,20 +53,18 @@ public class PersonService {
         Person p = this.personRepository.findByEmail(mail);
 
         if (p != null) {
-            List<BookedExperiences> bookedExperiences = this.getBookedExperiences(p);
+            List<BookedExperiences> bookedExperiences = this.getBookedExperiences(p, date);
             for (BookedExperiences be : bookedExperiences) {
-                if (be.getReservationDate().getYear() == date.getYear()
-                        && be.getReservationDate().getMonth() == date.getMonth()
-                        && be.getReservationDate().getDayOfMonth() == date.getDayOfMonth()) {
-
+                if (be.getStatus().equals(Enums.ReservationStatus.CONFIRMED) || be.getStatus().equals(Enums.ReservationStatus.CONFIRMED_AND_ATTENDED)) {
                     Optional<Experience> toReserveOptional = this.experienceRepository.findById(experienceId);
                     LocalDateTime experienceStartAt = LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), be.getStartTime().getHour(), be.getStartTime().getMinute());
                     LocalDateTime experienceEndsAt = experienceStartAt.plus(be.getDuration());
 
                     if (toReserveOptional.isPresent()) {
                         LocalDateTime toReserveExperienceStartsAt = LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), toReserveOptional.get().getStartTime().getHour(), toReserveOptional.get().getStartTime().getMinute());
-                        if (experienceEndsAt.isAfter(toReserveExperienceStartsAt)) {
-                            overlap = true;
+                        LocalDateTime toReserveExperienceEndsAt = toReserveExperienceStartsAt.plus(toReserveOptional.get().getDuration());
+                        overlap = max(experienceStartAt, toReserveExperienceStartsAt).isBefore(min(experienceEndsAt, toReserveExperienceEndsAt));
+                        if (overlap) {
                             LOGGER.info("overlap found for " + toReserveOptional.get() + " at " + experienceEndsAt);
                         }
                     }
@@ -85,5 +84,24 @@ public class PersonService {
             }
         }
         return result;
+    }
+
+    public List<BookedExperiences> getBookedExperiences(Person p, LocalDate date) {
+        List<BookedExperiences> result = new ArrayList<>();
+
+        if (p != null) {
+            for (Reservation reservation : this.reservationRepository.findByReservationDateAndPersonId(date, p.getId())) {
+                result.add(new BookedExperiences(this.experienceRepository.getOne(reservation.getExperienceId()), reservation));
+            }
+        }
+        return result;
+    }
+
+    private LocalDateTime max(LocalDateTime a, LocalDateTime b) {
+        return a.isAfter(b) ? a : b;
+    }
+
+    private LocalDateTime min(LocalDateTime a, LocalDateTime b) {
+        return a.isBefore(b) ? a : b;
     }
 }

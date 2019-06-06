@@ -40,6 +40,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByReservationDate(LocalDate reservationDate);
 
+    List<Reservation> findByReservationDateAndPersonId(LocalDate reservationDate, Long personId);
+
     Reservation findFirstByExperienceIdAndReservationDateAndStatus(Long experienceId, LocalDate date, Enums.ReservationStatus status);
 
     @Query("SELECT count(res.experienceId) FROM Reservation res WHERE res.experienceId=(:eID) AND res.reservationDate=(:date) AND res.status='CONFIRMED' group by res.reservationDate,res.experienceId")
