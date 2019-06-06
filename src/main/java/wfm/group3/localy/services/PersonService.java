@@ -11,6 +11,7 @@ import wfm.group3.localy.repository.PersonRepository;
 import wfm.group3.localy.repository.ReservationRepository;
 import wfm.group3.localy.utils.Enums;
 import wfm.group3.localy.utils.PBKDF2Hasher;
+import wfm.group3.localy.utils.Utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -65,7 +66,7 @@ public class PersonService {
                     if (toReserveOptional.isPresent()) {
                         LocalDateTime toReserveExperienceStartsAt = LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), toReserveOptional.get().getStartTime().getHour(), toReserveOptional.get().getStartTime().getMinute());
                         LocalDateTime toReserveExperienceEndsAt = toReserveExperienceStartsAt.plus(toReserveOptional.get().getDuration());
-                        overlap = max(experienceStartAt, toReserveExperienceStartsAt).isBefore(min(experienceEndsAt, toReserveExperienceEndsAt));
+                        overlap = Utils.max(experienceStartAt, toReserveExperienceStartsAt).isBefore(Utils.min(experienceEndsAt, toReserveExperienceEndsAt));
                         if (overlap) {
                             LOGGER.info("overlap found for " + toReserveOptional.get() + " at " + experienceEndsAt);
                         }
@@ -99,11 +100,4 @@ public class PersonService {
         return result;
     }
 
-    private LocalDateTime max(LocalDateTime a, LocalDateTime b) {
-        return a.isAfter(b) ? a : b;
-    }
-
-    private LocalDateTime min(LocalDateTime a, LocalDateTime b) {
-        return a.isBefore(b) ? a : b;
-    }
 }

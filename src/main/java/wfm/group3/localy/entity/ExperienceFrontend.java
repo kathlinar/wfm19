@@ -1,6 +1,7 @@
 package wfm.group3.localy.entity;
 
 import wfm.group3.localy.utils.Enums;
+import wfm.group3.localy.utils.Utils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -39,7 +40,7 @@ public class ExperienceFrontend implements Serializable {
         this.price = experience.getPrice();
         this.maxGroupSize = experience.getMaxGroupSize();
         this.address = experience.getLocation().getCity() + ", " + experience.getLocation().getStreet();
-        this.duration = String.format("%02d", experience.getDuration().toHoursPart()) + ":" + String.format("%02d", experience.getDuration().toMinutesPart());
+        this.duration = Utils.formatDuration(experience.getDuration());
         this.isRecommended = experience.isRecommended() == null ? false : experience.isRecommended();
         if(experience.getStartTime() != null)
             this.startTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(experience.getStartTime());

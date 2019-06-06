@@ -1,6 +1,7 @@
 package wfm.group3.localy.entity;
 
 import wfm.group3.localy.utils.Enums;
+import wfm.group3.localy.utils.Utils;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -46,7 +47,7 @@ public class BookedExperiences {
         this.price = experience.getPrice();
         this.address = experience.getLocation().getCity() + ", " + experience.getLocation().getStreet();
         this.duration = experience.getDuration();
-        this.durationString = String.format("%02d", experience.getDuration().toHoursPart()) + ":" + String.format("%02d", experience.getDuration().toMinutesPart());
+        this.durationString = Utils.formatDuration(experience.getDuration());
         this.startTime = experience.getStartTime();
 
         this.attended = reservation.getAttended();
