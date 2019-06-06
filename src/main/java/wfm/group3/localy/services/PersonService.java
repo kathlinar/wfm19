@@ -55,7 +55,9 @@ public class PersonService {
         if (p != null) {
             List<BookedExperiences> bookedExperiences = this.getBookedExperiences(p, date);
             for (BookedExperiences be : bookedExperiences) {
-                if (be.getStatus().equals(Enums.ReservationStatus.CONFIRMED) || be.getStatus().equals(Enums.ReservationStatus.CONFIRMED_AND_ATTENDED)) {
+                if (be.getStatus().equals(Enums.ReservationStatus.CONFIRMED)
+                        || be.getStatus().equals(Enums.ReservationStatus.CONFIRMED_AND_ATTENDED)
+                        || be.getStatus().equals(Enums.ReservationStatus.PENDING)) {
                     Optional<Experience> toReserveOptional = this.experienceRepository.findById(experienceId);
                     LocalDateTime experienceStartAt = LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), be.getStartTime().getHour(), be.getStartTime().getMinute());
                     LocalDateTime experienceEndsAt = experienceStartAt.plus(be.getDuration());
