@@ -174,28 +174,30 @@ public class MainController {
     @RequestMapping(value = "/cancelReservation", method = RequestMethod.POST)
     public ResponseEntity cancelReservation(@RequestBody Map<String, Object> payload) {
 
+        Optional<Reservation> reservationOptional = this.reservationRepository.findById(Long.parseLong(payload.get("reservationId").toString()));
 
-        String processInstanceId = this.reservationRepository
-                .findByReservationDate(LocalDate.parse(payload.get("date").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .get(0)
-                .getProcessInstanceId();
+        if (reservationOptional.isPresent()) {
+            String email = payload.get("email").toString();
+            String processInstanceId = reservationOptional.get().getProcessInstanceId();
+            this.runtimeService.createMessageCorrelation("InitUserCancellation")
+                    .setVariable("reservationId", payload.get("reservationId").toString())
+                    .processInstanceId(processInstanceId)
+                    .correlate();
 
-        // this.runtimeService.setVariable(processDefId,"canceled",true);
-        System.out.println(payload.get("reservationId"));
-
-        for (ProcessInstance processInstance : this.customerInstances.get(payload.get("email").toString())) {
-            if (processInstance.getId().equals(processInstanceId)) {
-                this.customerInstances.get(payload.get("email").toString()).remove(processInstance);
+            //this.runtimeService.deleteProcessInstance(processInstanceId, "");
+            int i;
+            ProcessInstance tmp=null;
+            for(i=0;i<this.customerInstances.get(email).size();i++){
+                if(this.customerInstances.get(email).get(i).getId().equals(processInstanceId))
+                    tmp = this.customerInstances.get(email).get(i);
             }
+            this.customerInstances.get(email).remove(tmp);
+
+            return new ResponseEntity(HttpStatus.OK);
         }
-
-        this.runtimeService.createMessageCorrelation("InitUserCancellation")
-                .setVariable("reservationId", payload.get("reservationId").toString())
-                .processInstanceId(processInstanceId)
-                .correlate();
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
 
-        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/checkLoginState/{email}", method = RequestMethod.GET)
