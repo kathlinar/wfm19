@@ -111,16 +111,17 @@ public class MainController {
                         .execute());
                 this.customerInstances.put(person.getEmail(), list);
             } else {
+                this.customerInstances.get(person.getEmail()).add(this.runtimeService.createProcessInstanceByKey("Customer")
+                        .setVariables(payload)
+                        .setVariable("loggedIn", false)
+                        .execute());
                 String processInstanceId = this.processIdHelper(person.getEmail());
                 List<Task> tasks = this.taskService.createTaskQuery().processInstanceId(processInstanceId).list();
                 if (!tasks.isEmpty() && tasks.get(0).getName().equals("Select Date")) {
                     this.runtimeService.deleteProcessInstance(processInstanceId, "");
                     this.customerInstances.get(person.getEmail()).remove(this.customerInstances.get(person.getEmail()).get(this.customerInstances.get(person.getEmail()).size() - 1));
                 }
-                this.customerInstances.get(person.getEmail()).add(this.runtimeService.createProcessInstanceByKey("Customer")
-                        .setVariables(payload)
-                        .setVariable("loggedIn", false)
-                        .execute());
+
             }
             List<Task> tasks = this.taskService.createTaskQuery()
                     .processInstanceId(this.customerInstances.get(person.getEmail()).get(this.customerInstances.get(person.getEmail()).size() - 1).getId()).list();
@@ -129,8 +130,9 @@ public class MainController {
                 this.taskService.complete(tasks.get(0).getId());
 
             return new ResponseEntity(HttpStatus.OK);
-        } else
-            return new ResponseEntity(HttpStatus.FAILED_DEPENDENCY);
+        }
+
+        return new ResponseEntity(HttpStatus.FAILED_DEPENDENCY);
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
