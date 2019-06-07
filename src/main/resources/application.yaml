@@ -1,7 +1,7 @@
 camunda.bpm:
   admin-user:
     id: demo
-    password: demo
+    password: megasecure
     firstName: Demo
   filter:
     create: All tasks
@@ -13,8 +13,8 @@ camunda.bpm:
 spring:
   datasource:
     username: sa
-    password: sa
-    url: jdbc:h2:mem:camunda
+    password: megasecure
+    url: jdbc:h2:file:~/db/camunda
     driver-class-name: org.h2.Driver
   h2:
     console:
@@ -22,7 +22,9 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
-
+  jpa:
+    hibernate:
+      ddl-auto: update
 server:
   port: 8081
 
